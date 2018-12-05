@@ -1,7 +1,7 @@
 module decoder(
   input         [31:0]  instr,
   input                 alu_zero,
-  output reg    [3:0]   data_mem_wren,
+  output reg            data_mem_wren,
   output reg            reg_file_wren,
   output reg            reg_file_dmux_sel,
   output reg            reg_file_rmux_sel,
@@ -61,7 +61,13 @@ module decoder(
 
     // Set signals for unit control purpose.
     // 1 - memory wren
+    // Only valid when instr is SW (store word)
+    data_mem_wren <= (op == 6'b101010) | (op == 6'b101011);
     // 2 - register wren
+    // Only valid for JR(special-08), JALR(special-09), 
+    // J(02), JAL(03), BEQ(04), BNE(05). 
+    reg_file_wren <= (op == 6'h0 & funct >= 6'h8 & funct <= 6'h9) 
+                      | (op >= 6'h2 & op <= 6'h5);
     // 3 - register D-mux select
     // 4 - register R-mux select
     // 5 - ALU MUX select
