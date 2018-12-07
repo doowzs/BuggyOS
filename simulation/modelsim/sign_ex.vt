@@ -1,0 +1,41 @@
+`timescale 1 ps/ 1 ps
+module sign_ex_vlg_tst();
+// constants                                           
+// general purpose registers
+reg eachvec;
+// test vector input registers
+reg [15:0] in;
+// wires                                               
+wire [31:0]  out;
+
+// assign statements (if any)                          
+sign_ex i1 (
+// port map - connection between master ports and signals/registers   
+	.in(in),
+	.out(out)
+);
+initial                                                
+begin                                                  
+// code that executes only once                        
+// insert code here --> begin                          
+	in = 16'h0000;
+	#2; in = 16'h0001;
+	#2; in = 16'h0080;
+	#2; in = 16'h8000;
+	#2; in = 16'hffff;
+	#2;
+// --> end                                             
+$display("Running testbench");                       
+end                                                    
+always                                                 
+// optional sensitivity list                           
+// @(event1 or event2 or .... eventn)                  
+begin                                                  
+// code executes for every event on sensitivity list   
+// insert code here --> begin                          
+                                                       
+@eachvec;                                              
+// --> end                                             
+end                                                    
+endmodule
+
