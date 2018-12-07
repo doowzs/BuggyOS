@@ -47,4 +47,9 @@ module cpu(
     .pc(pc2addr)
   );
 
+  instr_memory mINSTRMEM(
+    .addr(pc2addr),
+    .instr(instr)
+  );
+
 endmodule
