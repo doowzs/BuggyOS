@@ -14,7 +14,7 @@ module cpu(
   wire        signal_reg_file_dmux_sel;
   wire        signal_reg_file_rmux_sel;
   wire        signal_alu_mux_sel;
-  wire  [3:0] signal_alu_control;
+  wire  [3:0] signal_alu_op;
   wire  [2:0] signal_pc_control;
 
   // Registers
@@ -50,6 +50,18 @@ module cpu(
   instr_memory mINSTRMEM(
     .addr(pc2addr),
     .instr(instr)
+  );
+
+  decoder mDECODER(
+    .instr(instr),
+    .alu_zero(alu_eflags_zf),
+    .data_mem_wren(signal_data_mem_wren),
+    .reg_file_wren(signal_reg_file_wren),
+    .reg_file_dmux_sel(signal_reg_file_dmux_sel),
+    .reg_file_rmux_sel(signal_reg_file_rmux_sel),
+    .alu_mux_sel(signal_alu_mux_sel),
+    .alu_op(signal_alu_op),
+    .pc_control(signal_pc_control)
   );
 
 endmodule
