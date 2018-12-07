@@ -11,7 +11,6 @@ set_global_assignment -name PROJECT_CREATION_TIME_DATE "00:35:12 NOVEMBER 22,201
 set_global_assignment -name DEVICE_FILTER_PACKAGE FBGA
 set_global_assignment -name DEVICE_FILTER_PIN_COUNT 896
 set_global_assignment -name DEVICE_FILTER_SPEED_GRADE 6
-set_global_assignment -name SDC_FILE finallab.SDC
 
 #============================================================
 # CLOCK
@@ -362,3 +361,13 @@ set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name VERILOG_FILE cpu/reg/reg.v
+set_global_assignment -name VERILOG_FILE cpu/decoder/decoder.v
+set_global_assignment -name VERILOG_FILE cpu/alu/alu.v
+set_global_assignment -name SDC_FILE finallab.sdc
+set_global_assignment -name VERILOG_FILE finallab.v
+set_global_assignment -name SDC_FILE finallab.SDC
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
+set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
