@@ -64,4 +64,19 @@ module cpu(
     .pc_control(signal_pc_control)
   );
 
+  sign_ex mSIEX(
+    .in(instr[15:0]),
+    .out(instr_sign_ex)
+  );
+
+  assign reg_raddr0 = instr[25:21];
+  assign reg_raddr1 = instr[20:16];
+
+  mux21 #(.DATA_WIDTH(5)) mRegMUX(
+    .in0(reg_raddr1),
+    .in1(instr[15:11]),
+    .sel(signal_reg_file_rmux_sel),
+    .out(reg_waddr),
+  );
+
 endmodule
