@@ -1,0 +1,100 @@
+`timescale 1 ns/ 1 ps
+module alu_vlg_tst();
+// constants                                           
+// general purpose registers
+reg eachvec;
+// test vector input registers
+reg [3:0] op;
+reg [31:0] rs;
+reg [31:0] rt;
+// wires                                               
+wire of;
+wire [31:0]  rd;
+wire zf;
+
+// assign statements (if any)                          
+alu i1 (
+// port map - connection between master ports and signals/registers   
+	.of(of),
+	.op(op),
+	.rd(rd),
+	.rs(rs),
+	.rt(rt),
+	.zf(zf)
+);
+initial                                                
+begin
+	//AND
+	op = 4'b0000; rs = 32'h00000001; rt = 32'h00000001; #10
+	op = 4'b0000; rs = 32'h000f0000; rt = 32'h000a0000; #10
+	op = 4'b0000; rs = 32'h000f0000; rt = 32'h00000200; #10
+	op = 4'b0000; rs = 32'h000f0000; rt = 32'h000a0000; #10
+	//OR
+	op = 4'b0001; rs = 32'h00000001; rt = 32'h00000001; #10
+	op = 4'b0001; rs = 32'h000f0000; rt = 32'h000a0000; #10
+	op = 4'b0001; rs = 32'h000f0000; rt = 32'h00000200; #10
+	op = 4'b0001; rs = 32'h000f0000; rt = 32'h000a0000; #10
+	//U ADD
+	op = 4'b0010; rs = 32'h00000001; rt = 32'h00000001; #10
+	op = 4'b0010; rs = 32'hffffffff; rt = 32'h00000002; #10
+	op = 4'b0010; rs = 32'h7fffffff; rt = 32'h80000000; #10
+	op = 4'b0010; rs = 32'h7fffffff; rt = 32'h7fffffff; #10
+	//XOR
+	op = 4'b0011; rs = 32'h00000001; rt = 32'h00000001; #10
+	op = 4'b0011; rs = 32'h000f0000; rt = 32'h000a0000; #10
+	op = 4'b0011; rs = 32'h000f0000; rt = 32'h00000200; #10
+	op = 4'b0011; rs = 32'h000f0000; rt = 32'h000a0000; #10
+	//NOR
+	op = 4'b0100; rs = 32'h00000001; rt = 32'h00000001; #10
+	op = 4'b0100; rs = 32'h000f0000; rt = 32'h000a0000; #10
+	op = 4'b0100; rs = 32'h000f0000; rt = 32'h00000200; #10
+	op = 4'b0100; rs = 32'h000f0000; rt = 32'h000a0000; #10
+	//U SUB
+	op = 4'b0110; rs = 32'h00000001; rt = 32'h00000002; #10
+	op = 4'b0110; rs = 32'hffffffff; rt = 32'h00000002; #10
+	op = 4'b0110; rs = 32'h7fffffff; rt = 32'h80000000; #10
+	op = 4'b0110; rs = 32'h7fffffff; rt = 32'h7fffffff; #10
+	//SET ON LESS
+	op = 4'b0111; rs = 32'h00000001; rt = 32'h00000002; #10
+	op = 4'b0111; rs = 32'hffffffff; rt = 32'h00000002; #10
+	op = 4'b0111; rs = 32'h7fffffff; rt = 32'hffffffff; #10
+	op = 4'b0111; rs = 32'h7fffffff; rt = 32'h80000000; #10
+	//SHL
+	op = 4'b1000; rs = 32'h00000001; rt = 32'h00000002; #10
+	op = 4'b1000; rs = 32'h80000000; rt = 32'h00000002; #10
+	op = 4'b1000; rs = 32'hf0000000; rt = 32'h00000002; #10
+	op = 4'b1000; rs = 32'h0000000f; rt = 32'h00000002; #10
+	//SHR
+	op = 4'b1001; rs = 32'h00000001; rt = 32'h00000002; #10
+	op = 4'b1001; rs = 32'h80000000; rt = 32'h00000002; #10
+	op = 4'b1001; rs = 32'hf0000000; rt = 32'h00000002; #10
+	op = 4'b1001; rs = 32'h0000000f; rt = 32'h00000002; #10
+	//SAR
+	op = 4'b1010; rs = 32'h00000001; rt = 32'h00000002; #10
+	op = 4'b1010; rs = 32'h80000000; rt = 32'h00000002; #10
+	op = 4'b1010; rs = 32'hf0000000; rt = 32'h00000002; #10
+	op = 4'b1010; rs = 32'h0000000f; rt = 32'h00000002; #10
+	//S ADD
+	op = 4'b1011; rs = 32'h00000001; rt = 32'h00000001; #10
+	op = 4'b1011; rs = 32'hffffffff; rt = 32'h00000002; #10
+	op = 4'b1011; rs = 32'h7fffffff; rt = 32'h80000000; #10
+	op = 4'b1011; rs = 32'h7fffffff; rt = 32'h7fffffff; #10
+	//S SUB
+	op = 4'b1100; rs = 32'h00000001; rt = 32'h00000001; #10
+	op = 4'b1100; rs = 32'hffffffff; rt = 32'h00000002; #10
+	op = 4'b1100; rs = 32'h7fffffff; rt = 32'h80000000; #10
+	op = 4'b1100; rs = 32'h7fffffff; rt = 32'h7fffffff; #10
+$display("Running testbench");                       
+end                                                    
+always                                                 
+// optional sensitivity list                           
+// @(event1 or event2 or .... eventn)                  
+begin                                                  
+// code executes for every event on sensitivity list   
+// insert code here --> begin                          
+                                                       
+@eachvec;                                              
+// --> end                                             
+end                                                    
+endmodule
+

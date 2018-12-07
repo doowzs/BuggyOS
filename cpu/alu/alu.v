@@ -54,7 +54,7 @@ module alu(
 
       // Set on less than
       4'b0111: begin
-        rd <= (rs < rt) ? {{32, 1'b1}} : {{32, 1'b0}};
+        rd <= (rs < rt) ? -1 : 0;
         of <= 0;
       end
 
