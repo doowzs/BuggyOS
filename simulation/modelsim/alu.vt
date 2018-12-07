@@ -1,4 +1,4 @@
-`timescale 1 ns/ 1 ps
+`timescale 1 ps/ 1 ps
 module alu_vlg_tst();
 // constants                                           
 // general purpose registers
