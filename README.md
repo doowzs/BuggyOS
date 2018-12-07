@@ -48,3 +48,4 @@ The CPU will use 32-bit MIPS instruction set.
 ## CPU Manual
 
 (To be updated.)
+Maxwell push test
