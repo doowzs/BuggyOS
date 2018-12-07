@@ -133,6 +133,24 @@ module decoder(
       alu_control <= 4'b1111;
     end
     // 7 - PC Control
+    #0.5 // avoid race condition
+    if (op == 6'h02 | op == 6'h03) begin
+      // J(02) | JAL(03)
+      pc_control <= 3'b001;
+    end else if (op == 6'h00 & (funct == 6'h08 | funct == 6'h09)) begin
+      // JR(0-08) | JALR(0-09)
+      pc_control <= 3'b010;
+    end else if (op == 6'h04 & alu_zf == 1) begin
+      // BEQ(04)
+      $display("###beq");
+      pc_control <= 3'b011;
+    end else if (op == 6'h05 & alu_zf == 0) begin
+      // BNE(05)
+      $display("###bne");
+      pc_control <= 3'b011;
+    end else begin
+      pc_control <= 3'b000;
+    end
 
   end
 
