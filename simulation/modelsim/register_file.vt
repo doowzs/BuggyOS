@@ -1,0 +1,117 @@
+`timescale 1 ps/ 1 ps
+module register_file_vlg_tst();
+// constants                                           
+// general purpose registers
+reg eachvec;
+// test vector input registers
+reg clk;
+reg [4:0] raddr0;
+reg [4:0] raddr1;
+reg [4:0] waddr;
+reg [31:0] wdata;
+reg wren;
+// wires                                               
+wire [31:0]  rdata0;
+wire [31:0]  rdata1;
+
+// assign statements (if any)                          
+register_file i1 (
+// port map - connection between master ports and signals/registers   
+	.clk(clk),
+	.raddr0(raddr0),
+	.raddr1(raddr1),
+	.rdata0(rdata0),
+	.rdata1(rdata1),
+	.waddr(waddr),
+	.wdata(wdata),
+	.wren(wren)
+);
+initial                                                
+begin                                                  
+// code that executes only once                        
+// insert code here --> begin                          
+	clk = 0; wren = 0; raddr0 = 0; raddr1 = 0; waddr = 0; wdata = 0;
+	//WRITE INTO ALL CELLS
+	#6; wren = 1; waddr = 5'b00000; wdata = 32'b00000;
+	#6; wren = 1; waddr = 5'b00001; wdata = 32'b00001;
+	#6; wren = 1; waddr = 5'b00010; wdata = 32'b00010;
+	#6; wren = 1; waddr = 5'b00011; wdata = 32'b00011;
+	#6; wren = 1; waddr = 5'b00100; wdata = 32'b00100;
+	#6; wren = 1; waddr = 5'b00101; wdata = 32'b00101;
+	#6; wren = 1; waddr = 5'b00110; wdata = 32'b00110;
+	#6; wren = 1; waddr = 5'b00111; wdata = 32'b00111;
+	#6; wren = 1; waddr = 5'b01000; wdata = 32'b01000;
+	#6; wren = 1; waddr = 5'b01001; wdata = 32'b01001;
+	#6; wren = 1; waddr = 5'b01010; wdata = 32'b01010;
+	#6; wren = 1; waddr = 5'b01011; wdata = 32'b01011;
+	#6; wren = 1; waddr = 5'b01100; wdata = 32'b01100;
+	#6; wren = 1; waddr = 5'b01101; wdata = 32'b01101;
+	#6; wren = 1; waddr = 5'b01110; wdata = 32'b01110;
+	#6; wren = 1; waddr = 5'b01111; wdata = 32'b01111;
+	#6; wren = 1; waddr = 5'b10000; wdata = 32'b10000;
+	#6; wren = 1; waddr = 5'b10001; wdata = 32'b10001;
+	#6; wren = 1; waddr = 5'b10010; wdata = 32'b10010;
+	#6; wren = 1; waddr = 5'b10011; wdata = 32'b10011;
+	#6; wren = 1; waddr = 5'b10100; wdata = 32'b10100;
+	#6; wren = 1; waddr = 5'b10101; wdata = 32'b10101;
+	#6; wren = 1; waddr = 5'b10110; wdata = 32'b10110;
+	#6; wren = 1; waddr = 5'b10111; wdata = 32'b10111;
+	#6; wren = 1; waddr = 5'b11000; wdata = 32'b11000;
+	#6; wren = 1; waddr = 5'b11001; wdata = 32'b11001;
+	#6; wren = 1; waddr = 5'b11010; wdata = 32'b11010;
+	#6; wren = 1; waddr = 5'b11011; wdata = 32'b11011;
+	#6; wren = 1; waddr = 5'b11100; wdata = 32'b11100;
+	#6; wren = 1; waddr = 5'b11101; wdata = 32'b11101;
+	#6; wren = 1; waddr = 5'b11110; wdata = 32'b11110;
+	#6; wren = 1; waddr = 5'b11111; wdata = 32'b11111;
+	#6; wren = 0;
+	//READ FROM ALL CELLS
+	#6; wren = 1; raddr0 = 5'b00000; raddr1 = 5'b11111;
+	#6; wren = 1; raddr0 = 5'b00001; raddr1 = 5'b00000;
+	#6; wren = 1; raddr0 = 5'b00010; raddr1 = 5'b00001;
+	#6; wren = 1; raddr0 = 5'b00011; raddr1 = 5'b00010;
+	#6; wren = 1; raddr0 = 5'b00100; raddr1 = 5'b00011;
+	#6; wren = 1; raddr0 = 5'b00101; raddr1 = 5'b00100;
+	#6; wren = 1; raddr0 = 5'b00110; raddr1 = 5'b00101;
+	#6; wren = 1; raddr0 = 5'b00111; raddr1 = 5'b00110;
+	#6; wren = 1; raddr0 = 5'b01000; raddr1 = 5'b00111;
+	#6; wren = 1; raddr0 = 5'b01001; raddr1 = 5'b01000;
+	#6; wren = 1; raddr0 = 5'b01010; raddr1 = 5'b01001;
+	#6; wren = 1; raddr0 = 5'b01011; raddr1 = 5'b01010;
+	#6; wren = 1; raddr0 = 5'b01100; raddr1 = 5'b01011;
+	#6; wren = 1; raddr0 = 5'b01101; raddr1 = 5'b01100;
+	#6; wren = 1; raddr0 = 5'b01110; raddr1 = 5'b01101;
+	#6; wren = 1; raddr0 = 5'b01111; raddr1 = 5'b01110;
+	#6; wren = 1; raddr0 = 5'b10000; raddr1 = 5'b01111;
+	#6; wren = 1; raddr0 = 5'b10001; raddr1 = 5'b10000;
+	#6; wren = 1; raddr0 = 5'b10010; raddr1 = 5'b10001;
+	#6; wren = 1; raddr0 = 5'b10011; raddr1 = 5'b10010;
+	#6; wren = 1; raddr0 = 5'b10100; raddr1 = 5'b10011;
+	#6; wren = 1; raddr0 = 5'b10101; raddr1 = 5'b10100;
+	#6; wren = 1; raddr0 = 5'b10110; raddr1 = 5'b10101;
+	#6; wren = 1; raddr0 = 5'b10111; raddr1 = 5'b10110;
+	#6; wren = 1; raddr0 = 5'b11000; raddr1 = 5'b10111;
+	#6; wren = 1; raddr0 = 5'b11001; raddr1 = 5'b11000;
+	#6; wren = 1; raddr0 = 5'b11010; raddr1 = 5'b11001;
+	#6; wren = 1; raddr0 = 5'b11011; raddr1 = 5'b11010;
+	#6; wren = 1; raddr0 = 5'b11100; raddr1 = 5'b11011;
+	#6; wren = 1; raddr0 = 5'b11101; raddr1 = 5'b11100;
+	#6; wren = 1; raddr0 = 5'b11110; raddr1 = 5'b11101;
+	#6; wren = 1; raddr0 = 5'b11111; raddr1 = 5'b11110;
+	#6; wren = 0;
+	$stop;
+// --> end                                             
+//$display("Running testbench");                       
+end                                                    
+always                                                 
+// optional sensitivity list                           
+// @(event1 or event2 or .... eventn)                  
+begin                                                  
+// code executes for every event on sensitivity list   
+// insert code here --> begin                          
+	#2; clk = ~clk;
+//@eachvec;                                              
+// --> end                                             
+end                                                    
+endmodule
+
