@@ -1,4 +1,4 @@
-module reg(
+module register_file(
   input           clk,
   input   [4:0]   raddr0,
   output  [31:0]  rdata0,
