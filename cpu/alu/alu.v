@@ -90,7 +90,8 @@ module alu(
       end
 
       default: begin
-        rd <= 0;
+		  // output rt so that LUI can work
+        rd <= rt;
         of <= 0;
       end
     endcase
