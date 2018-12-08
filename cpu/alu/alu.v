@@ -17,31 +17,31 @@ module alu(
   always @ (*) begin
     case (op)
       // AND
-      4'b0000: begin
+      4'b0001: begin
         rd <= rs & rt;
         of <= 0;
       end
 
       // OR
-      4'b0001: begin
+      4'b0010: begin
         rd <= rs | rt;
         of <= 0;
       end
 
       // Unsigned ADD
-      4'b0010: begin
+      4'b0011: begin
         rd <= add;
         of <= 0;
       end
 
       // XOR
-      4'b0011: begin
+      4'b0100: begin
         rd <= rs ^ rt;
         of <= 0;
       end
 
       // NOR
-      4'b0100: begin
+      4'b0101: begin
         rd <= ~(rs | rt);
         of <= 0;
       end

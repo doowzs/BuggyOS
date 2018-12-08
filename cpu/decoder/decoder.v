@@ -103,19 +103,19 @@ module decoder(
     // 6 - ALU op-code
     if ((op == 6'b000000 && funct == 6'b100100) || op == 6'b001100) begin
       // AND(0-24) | ANDI(0C)
-      alu_op <= 4'b0000;
+      alu_op <= 4'b0001;
     end else if ((op == 6'b000000 && funct == 6'b100101) || op == 6'b001101) begin
       // OR(0-25) | ORI(0D)
-      alu_op <= 4'b0001;
+      alu_op <= 4'b0010;
     end else if ((op == 6'b000000 && funct == 6'b100001) || op == 6'b001001) begin
       // ADDU(0-21) | ADDIU(09)
-      alu_op <= 4'b0010;
+      alu_op <= 4'b0011;
     end else if (op == 6'b000000 && funct == 6'b100110) begin
       // XOR(0-26)
-      alu_op <= 4'b0011;
+      alu_op <= 4'b0100;
     end else if (op == 6'b000000 && funct == 6'b100111) begin
       // NOR(0-27)
-      alu_op <= 4'b0100;
+      alu_op <= 4'b0101;
     end else if (op == 6'b000000 && funct == 6'b100011) begin
       // SUBU(0-23)
       alu_op <= 4'b0110;
@@ -137,9 +137,9 @@ module decoder(
       alu_op <= 4'b1011;
     end else if ((op == 6'b000000 && funct == 6'b100010) || op == 6'b000100 || op == 6'b000101) begin
       // SUB(0-22) | BEQ(04) | BNE(05)
-      alu_op <= 4'b1110;
+      alu_op <= 4'b1100;
     end else begin
-      alu_op <= 4'b1111;
+      alu_op <= 4'b0000;
     end
 	 
     // 7 - PC Control
