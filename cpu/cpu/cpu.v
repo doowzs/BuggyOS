@@ -3,7 +3,7 @@ module cpu(
   input sys_clk,
   input rst,
   output [9:0] LEDR,
-  output [7:0] PCSEG
+  output [23:0] PCSEG
 );
 
   // Program counter and instruction
@@ -35,9 +35,16 @@ module cpu(
   wire        alu_eflags_zf;
 
   // Data Memory
+  wire [31:0] data_mem_paddr;
   wire [31:0] data_mem_rdata;
   
-  assign PCSEG = pc2addr;
+  // Debug Output
+  assign LEDR = {
+    signal_data_mem_wren, signal_reg_file_wren,
+	 signal_reg_file_dmux_sel, signal_reg_file_rmux_sel,
+	 signal_alu_mux_sel, signal_alu_op[3:0], (signal_pc_control != 0)
+  };
+  assign PCSEG = {reg_wdata[15:0], pc2addr[7:0]};
 
   //-------------------------------------
   // Instantiations
@@ -97,7 +104,6 @@ module cpu(
 	 .sel(signal_reg_file_dmux_sel),
 	 .out(reg_wdata)
   );
-  assign LEDR[7:0] = reg_wdata[7:0];
   
   register_file mREG(
     .clk(clk),
@@ -110,8 +116,6 @@ module cpu(
     .wren(signal_reg_file_wren)
   );
   
-  assign LEDR[8] = signal_reg_file_wren;
-  
   alu mALU(
     .op(signal_alu_op),
     .rs(reg_rdata0),
@@ -121,12 +125,12 @@ module cpu(
     .of(alu_eflags_of)
   );
   
+  assign data_mem_paddr = alu_dest - 8'h10000000;
   data_memory mMEM(
-	 .address(alu_dest), // Rs + offset
-	 .clock(sys_clk),    // use system clock for RAM
-	 .data(reg_rdata1),  // Rt
+	 .address(data_mem_paddr), // Rs + offset
+	 .clock(sys_clk),          // use system clock for RAM
+	 .data(reg_rdata1),        // Rt
 	 .wren(signal_data_mem_wren),
 	 .q(data_mem_rdata)
   );
-  assign LEDR[9] = signal_data_mem_wren;
 endmodule

@@ -88,7 +88,11 @@ module finallab(
 		.sys_clk(CLOCK_50),
 		.rst(~KEY[3]),
 		.LEDR(wire_ledr),
-		.PCSEG({wire_seg1[3:0], wire_seg0[3:0]})
+		.PCSEG({
+			wire_seg5[3:0], wire_seg4[3:0],
+			wire_seg3[3:0], wire_seg2[3:0],
+			wire_seg1[3:0], wire_seg0[3:0]
+		})
 	);
 	
 	io mIO(
