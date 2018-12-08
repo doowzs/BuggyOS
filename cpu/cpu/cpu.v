@@ -1,7 +1,7 @@
 module cpu(
   input clk,
   input rst
-)
+);
 
   // Program counter and instruction
   wire [31:0] pc2addr;

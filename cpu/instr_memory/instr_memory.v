@@ -1,7 +1,7 @@
 module instr_memory(
   input   [31:0] addr,
   output  [31:0] instr
-)
+);
 
   wire [7:0] paddr;
   assign paddr = addr[9:2];
