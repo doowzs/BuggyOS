@@ -1,5 +1,6 @@
 module cpu(
   input clk,
+  input CLOCK_50,
   input rst,
   output [9:0] LEDR,
   output [7:0] PCSEG
@@ -96,7 +97,7 @@ module cpu(
 	 .sel(signal_reg_file_dmux_sel),
 	 .out(reg_wdata)
   );
-  assign LEDR = reg_wdata[9:0];
+  assign LEDR[7:0] = reg_wdata[7:0];
   
   register_file mREG(
     .clk(clk),
@@ -109,6 +110,8 @@ module cpu(
     .wren(signal_reg_file_wren)
   );
   
+  assign LEDR[8] = signal_reg_file_wren;
+  
   alu mALU(
     .op(signal_alu_op),
     .rs(reg_rdata0),
@@ -119,11 +122,11 @@ module cpu(
   );
   
   data_memory mMEM(
-	 .address(alu_dest-8'h10010000), // Rs + offset
-	 .clock(clk),
+	 .address(alu_dest), // Rs + offset
+	 .clock(CLOCK_50),
 	 .data(reg_rdata1),  // Rt
 	 .wren(signal_data_mem_wren),
 	 .q(data_mem_rdata)
   );
-
+  assign LEDR[9] = signal_data_mem_wren;
 endmodule

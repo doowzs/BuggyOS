@@ -85,6 +85,7 @@ module finallab(
 	wire [3:0] wire_seg5;
 
 	cpu mCPU(
+		.CLOCK_50(CLOCK_50),
 		.clk(KEY[0]),
 		.rst(~KEY[3]),
 		.LEDR(wire_ledr),
