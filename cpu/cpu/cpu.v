@@ -16,7 +16,7 @@ module cpu(
   wire        signal_reg_file_wren;
   wire        signal_reg_file_dmux_sel;
   wire        signal_reg_file_rmux_sel;
-  wire        signal_alu_mux_sel;
+  wire        signal_alu_imux_sel;
   wire  [3:0] signal_alu_op;
   wire  [2:0] signal_pc_control;
 
@@ -42,7 +42,7 @@ module cpu(
   assign LEDR = {
     signal_data_mem_wren, signal_reg_file_wren,
 	 signal_reg_file_dmux_sel, signal_reg_file_rmux_sel,
-	 signal_alu_mux_sel, signal_alu_op[3:0], (signal_pc_control != 0)
+	 signal_alu_imux_sel, signal_alu_op[3:0], (signal_pc_control != 0)
   };
   assign PCSEG = {reg_wdata[15:0], pc2addr[7:0]};
 
@@ -76,7 +76,7 @@ module cpu(
     .reg_file_wren(signal_reg_file_wren),
     .reg_file_dmux_sel(signal_reg_file_dmux_sel),
     .reg_file_rmux_sel(signal_reg_file_rmux_sel),
-    .alu_mux_sel(signal_alu_mux_sel),
+    .alu_imux_sel(signal_alu_imux_sel),
     .alu_op(signal_alu_op),
     .pc_control(signal_pc_control)
   );
@@ -84,6 +84,8 @@ module cpu(
   assign reg_raddr0 = instr[25:21];
   assign reg_raddr1 = instr[20:16];
 
+  // if R-mux signal is valid, use rd register;
+  // otherwise, use rt register.
   mux21 #(.DATA_WIDTH(5)) mRegMUX(
     .in0(reg_raddr1),
     .in1(instr[15:11]),
@@ -91,13 +93,8 @@ module cpu(
     .out(reg_waddr)
   );
   
-  mux21 mALUMUX(
-    .in0(reg_rdata1),
-	 .in1(instr_sign_ex),
-	 .sel(signal_alu_mux_sel),
-	 .out(alu_src)
-  );
-  
+  // if D-mux signal is valid, load result from ALU to register;
+  // otherwise, load data_mem_rdata read from memory.
   mux21 mMEMMUX(
     .in0(data_mem_rdata),
 	 .in1(alu_dest),
@@ -105,6 +102,16 @@ module cpu(
 	 .out(reg_wdata)
   );
   
+  // if I-mux signal is valid, use the sign extended immediate from instruction;
+  // otherwise, use rt register for second operand.
+  mux21 mIMMMUX(
+    .in0(reg_rdata1),
+	 .in1(instr_sign_ex),
+	 .sel(signal_alu_imux_sel),
+	 .out(alu_src)
+  );
+  
+  // read/write from registers.
   register_file mREG(
     .clk(clk),
 	 .raddr0(reg_raddr0),
@@ -116,6 +123,7 @@ module cpu(
     .wren(signal_reg_file_wren)
   );
   
+  // ALU module
   alu mALU(
     .op(signal_alu_op),
     .rs(reg_rdata0),
@@ -125,6 +133,7 @@ module cpu(
     .of(alu_eflags_of)
   );
   
+  // All data address begins from 0x10000000 to fit MARS.
   assign data_mem_paddr = alu_dest - 8'h10000000;
   data_memory mMEM(
 	 .address(data_mem_paddr), // Rs + offset

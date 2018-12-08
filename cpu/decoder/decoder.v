@@ -6,7 +6,7 @@ module decoder(
   output reg            reg_file_wren,
   output reg            reg_file_dmux_sel,
   output reg            reg_file_rmux_sel,
-  output reg            alu_mux_sel,
+  output reg            alu_imux_sel,
   output reg    [3:0]   alu_op,
   output reg    [2:0]   pc_control
 );
@@ -95,9 +95,9 @@ module decoder(
     // Only valid for I-type instructions.
     // J(02) and JAL(03) are special judged. 
     if (op == 6'b000000 || op == 6'b000010 || op == 6'b000011) begin
-      alu_mux_sel <= 0;
+      alu_imux_sel <= 0;
     end else begin
-      alu_mux_sel <= 1;
+      alu_imux_sel <= 1;
     end
 	 
     // 6 - ALU op-code
