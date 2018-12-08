@@ -373,7 +373,6 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to PS2_DAT
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to PS2_DAT2
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FPGA_I2C_SCLK
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FPGA_I2C_SDAT
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name VERILOG_FILE cpu/cpu/cpu.v
 set_global_assignment -name VERILOG_FILE cpu/program_counter/program_counter.v
 set_global_assignment -name VERILOG_FILE cpu/mux21/mux21.v
@@ -387,3 +386,4 @@ set_global_assignment -name SDC_FILE finallab.sdc
 set_global_assignment -name VERILOG_FILE finallab.v
 set_global_assignment -name SDC_FILE finallab.SDC
 set_global_assignment -name QIP_FILE cpu/data_memory/data_memory.qip
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
