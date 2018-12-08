@@ -63,7 +63,7 @@ module decoder(
     // Set signals for unit control purpose.
     // 1 - memory write signal
     // Only valid when instr is Sx instructions (28~2E)
-	 if (op >= 6'b101000 && op == 6'b101110) begin
+	 if (op >= 6'b101000 && op <= 6'b101110) begin
 		data_mem_wren <= 1;
 	 end else begin
 		data_mem_wren <= 0;
@@ -71,9 +71,9 @@ module decoder(
 	 
     // 2 - register wren
     // Only invalid for JR(special-08), JALR(special-09), 
-    // J(02), JAL(03), BEQ(04), BNE(05). 
+    // J(02), JAL(03), BEQ(04), BNE(05) and Sx(28~2E). 
     if ((op == 6'b000000 && funct >= 6'b001000 && funct <= 6'b001001) 
-      || (op >= 6'b000010 && op <= 6'b000101)) begin
+      || (op >= 6'b000010 && op <= 6'b000101) || (op >= 6'b101000 && op <= 6'b101110)) begin
       reg_file_wren <= 0;
     end else begin
       reg_file_wren <= 1;
