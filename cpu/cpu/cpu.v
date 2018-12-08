@@ -1,6 +1,6 @@
 module cpu(
   input clk,
-  input CLOCK_50,
+  input sys_clk,
   input rst,
   output [9:0] LEDR,
   output [7:0] PCSEG
@@ -123,7 +123,7 @@ module cpu(
   
   data_memory mMEM(
 	 .address(alu_dest), // Rs + offset
-	 .clock(CLOCK_50),
+	 .clock(sys_clk),    // use system clock for RAM
 	 .data(reg_rdata1),  // Rt
 	 .wren(signal_data_mem_wren),
 	 .q(data_mem_rdata)
