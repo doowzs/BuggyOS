@@ -10,7 +10,7 @@ module instr_memory(
   reg [31:0] instr_memory [255:0];
   
   initial begin
-    $readmemh("program/fibonacci_no_mem.mips", instr_memory);
+    $readmemh("program/fibonacci.mips", instr_memory);
   end
 
   assign instr = instr_memory[paddr];
