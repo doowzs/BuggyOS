@@ -17,11 +17,30 @@ module program_counter(
       pc <= 32'h00000000;
     end else begin
       case (pc_control)
-        3'b000: pc <= seq_pc;
-        3'b001: pc <= {seq_pc{31:28}, jmp_addr[25:0], 2'b00};
-        3'b010: pc <= reg_addr;
-        3'b011: pc <= seq_pc + {{14{branch_offset[15]}}, branch_offset[15:0], 2'b00};
-        default: pc <= seq_pc;
+        3'b000: begin
+		    // Non-Jump
+		    pc <= seq_pc;
+		  end
+		  
+        3'b001: begin
+		    // Jump (J)
+		    pc <= {seq_pc[31:28], jmp_addr[25:0], 2'b00};
+		  end
+		  
+        3'b010: begin
+		    // Jump Register (JR)
+		    pc <= reg_addr;
+		  end
+		  
+        3'b011: begin
+		    // Branch on EQ/NE (BEQ/BNE)
+			 // PC = PC + (int) offset
+		    pc <= seq_pc + {{14{branch_offset[15]}}, branch_offset[15:0], 2'b00};
+		  end
+		  
+        default: begin
+		    pc <= seq_pc;
+		  end
       endcase
     end
   end
