@@ -23,8 +23,10 @@ module decoder(
   assign op = instr[31:26];
 
   always @ (*) begin
+	 //---------------------------------------------
     // Determine addr, imm, rs/t/d, shamt, funct
     // for different types of instruction.
+	 //---------------------------------------------
     casex (op)
       // R-type
       6'b000000: begin
@@ -59,6 +61,32 @@ module decoder(
         funct <= instr[5:0];
       end
     endcase
+	 
+	 //---------------------------------------------
+	 // Set signals for ALU, PC, REG and MEMs.
+	 // 
+	 // data_mem_wren: set to write data to memory. 
+	 // only set for Sx instructions (28~2E).
+	 // 
+	 // reg_file_wren: set to write data to registers. 
+	 // Only NOT set for J, Branch and Sx instructions.
+	 // 
+	 // reg_file_dmux_sel: set to let ALU load data from register.
+	 // If not set, ALU will load data from memory, only for Lx instructions.
+	 // 
+	 // reg_file_rmux_sel: set to use rd register instead of rt register.
+	 // Only set for all R-type instructions.
+	 // 
+	 // alu_imux_sel: set to use immediate number instead of rt register.
+	 // Only set for I-type instructions.
+	 //---------------------------------------------
+	 data_mem_wren <= 0;
+	 reg_file_wren <= 0;
+	 reg_file_dmux_sel <= 0;
+	 reg_file_rmux_sel <= 0;
+	 alu_imux_sel <= 0;
+	 alu_op <= 4'b0000;
+	 pc_control <= 3'b000;
 
     // Set signals for unit control purpose.
     // 1 - memory write signal
@@ -91,7 +119,7 @@ module decoder(
     // Only valid for R-type instructions.
     reg_file_rmux_sel <= (op == 6'b000000);
 	 
-    // 5 - ALU MUX select
+    // 5 - ALU I-MUX select
     // Only valid for I-type instructions.
     // J(02) and JAL(03) are special judged. 
     if (op == 6'b000000 || op == 6'b000010 || op == 6'b000011) begin
@@ -100,7 +128,9 @@ module decoder(
       alu_imux_sel <= 1;
     end
 	 
-    // 6 - ALU op-code
+	 //---------------------------------------------
+    // Set ALU op-code according to instructions
+	 //---------------------------------------------
     if ((op == 6'b000000 && funct == 6'b100100) || op == 6'b001100) begin
       // AND(0-24) | ANDI(0C)
       alu_op <= 4'b0001;
@@ -142,7 +172,9 @@ module decoder(
       alu_op <= 4'b0000;
     end
 	 
-    // 7 - PC Control
+	 //---------------------------------------------
+    // Set PC control code according to instructions and ALU result
+	 //---------------------------------------------
     #0.5 // avoid race condition
     if (op == 6'b000010 || op == 6'b000010) begin
       // J(02) | JAL(03)
@@ -151,12 +183,10 @@ module decoder(
       // JR(0-08) | JALR(0-09)
       pc_control <= 3'b010;
     end else if (op == 6'b000100 && alu_zf == 1) begin
-      // BEQ(04)
-      $display("###beq");
+      // BEQ(04) Branching if equal
       pc_control <= 3'b011;
     end else if (op == 6'b000101 && alu_zf == 0) begin
-      // BNE(05)
-      $display("###bne");
+      // BNE(05) Branching if not equal
       pc_control <= 3'b011;
     end else begin
       pc_control <= 3'b000;
