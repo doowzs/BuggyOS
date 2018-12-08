@@ -80,7 +80,7 @@ module cpu(
     .in0(reg_raddr1),
     .in1(instr[15:11]),
     .sel(signal_reg_file_rmux_sel),
-    .out(reg_waddr),
+    .out(reg_waddr)
   );
   
   mux21 mALUMUX(
@@ -119,7 +119,7 @@ module cpu(
   );
   
   data_memory mMEM(
-	 .address(alu_dest), // Rs + offset
+	 .address(alu_dest-8'h10010000), // Rs + offset
 	 .clock(clk),
 	 .data(reg_rdata1),  // Rt
 	 .wren(signal_data_mem_wren),
