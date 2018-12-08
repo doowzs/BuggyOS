@@ -3,8 +3,9 @@ module cpu(
   input sys_clk,
   input rst,
   input [9:0] SW,
+  input [3:0] KEY,
   output [9:0] LEDR,
-  output [23:0] PCSEG
+  output reg [23:0] SEG
 );
 
   // Program counter and instruction
@@ -51,24 +52,29 @@ module cpu(
 	 signal_reg_dmux_sel, signal_reg_rmux_sel,
 	 signal_alu_imux_sel, signal_alu_op[3:0], (signal_pc_control != 0)
   };
-  assign PCSEG = {DEBUG_SEG, pc2addr[7:0]};
   always @ (*) begin
-	 if (SW[8]) begin
-	   DEBUG_SEG_32 = alu_src;
-	 end else if (SW[7]) begin
-	   DEBUG_SEG_32 = alu_dest;
-	 end else if (SW[6]) begin
-	   DEBUG_SEG_32 = reg_wdata;
-	 end else if (SW[5]) begin
-	   DEBUG_SEG_32 = mem_rdata;
-	 end else begin
-	   DEBUG_SEG_32 = REG_DEBUG_OUT;
-    end
-	 
-    if (SW[9]) begin
-	   DEBUG_SEG = DEBUG_SEG_32[31:16];
-	 end else begin
-		DEBUG_SEG = DEBUG_SEG_32[15:0];
+    if (SW == 0) begin
+	   SEG = pc2addr[23:0];
+    end else begin
+	   if (SW[9]) begin
+		  DEBUG_SEG_32 = reg_rdata0;
+	   end else if (SW[8]) begin
+	     DEBUG_SEG_32 = alu_src;
+	   end else if (SW[7]) begin
+	     DEBUG_SEG_32 = alu_dest;
+	   end else if (SW[6]) begin
+	     DEBUG_SEG_32 = reg_wdata;
+	   end else if (SW[5]) begin
+	     DEBUG_SEG_32 = mem_rdata;
+	   end else begin
+		  DEBUG_SEG_32 = REG_DEBUG_OUT;
+      end
+      if (~KEY[2]) begin
+	     DEBUG_SEG = DEBUG_SEG_32[31:16];
+	   end else begin
+	     DEBUG_SEG = DEBUG_SEG_32[15:0];
+	   end
+      SEG = {DEBUG_SEG, pc2addr[7:0]};
 	 end
   end
 
