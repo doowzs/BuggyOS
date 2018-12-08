@@ -381,7 +381,7 @@ set_global_assignment -name VERILOG_FILE cpu/instr_memory/instr_memory.v
 set_global_assignment -name VERILOG_FILE cpu/data_memory/data_memory.v
 set_global_assignment -name VERILOG_FILE cpu/alu/alu.v
 set_global_assignment -name VERILOG_FILE cpu/decoder/decoder.v
-set_global_assignment -name VERILOG_FILE cpu/cpu/cpu.v
+set_global_assignment -name VERILOG_FILE cpu/cpu.v
 set_global_assignment -name SDC_FILE finallab.sdc
 set_global_assignment -name VERILOG_FILE finallab.v
 set_global_assignment -name SDC_FILE finallab.SDC

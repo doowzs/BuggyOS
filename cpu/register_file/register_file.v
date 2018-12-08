@@ -7,13 +7,16 @@ module register_file(
   input   [4:0]   waddr,
   input   [31:0]  wdata,
   input           wren,
-  input           is_upper
+  input           is_upper,
+  input   [4:0]   DEBUG_ADDR,
+  output  [31:0]  DEBUG_OUT
 );
 
   reg [31:0] reg_file [31:0];
 
   assign rdata0 = reg_file[raddr0];
   assign rdata1 = reg_file[raddr1];
+  assign DEBUG_OUT = reg_file[DEBUG_ADDR];
 
   integer i;
   initial begin

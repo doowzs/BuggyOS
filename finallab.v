@@ -87,6 +87,7 @@ module finallab(
 		.clk(KEY[0]),
 		.sys_clk(CLOCK_50),
 		.rst(~KEY[3]),
+		.SW(SW),
 		.LEDR(wire_ledr),
 		.PCSEG({
 			wire_seg5[3:0], wire_seg4[3:0],

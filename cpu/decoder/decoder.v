@@ -224,7 +224,6 @@ module decoder(
 		// 23 LW
 		6'b100011: begin
         reg_dmux_sel <= 0;
-		  //alu_imux_sel <= 0;
       end 
 		// 24 LBU   is not implemented!
 		// 25 LHU   is not implemented!
@@ -236,7 +235,6 @@ module decoder(
 		6'b101011: begin
 		  mem_wren <= 1;
 		  reg_wren <= 0;
-		  //alu_imux_sel <= 0;
 		end
 		// 2E SWR   is not implemented!
 	 endcase

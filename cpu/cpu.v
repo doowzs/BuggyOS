@@ -2,6 +2,7 @@ module cpu(
   input clk,
   input sys_clk,
   input rst,
+  input [9:0] SW,
   output [9:0] LEDR,
   output [23:0] PCSEG
 );
@@ -39,13 +40,37 @@ module cpu(
   wire [31:0] mem_paddr;
   wire [31:0] mem_rdata;
   
-  // Debug Output
+  //-------------------------------------
+  // DEBUG OUTPUT
+  //-------------------------------------
+  reg [15:0] DEBUG_SEG;
+  reg [31:0] DEBUG_SEG_32;
+  wire [31:0] REG_DEBUG_OUT;
   assign LEDR = {
     signal_mem_wren, signal_reg_wren,
 	 signal_reg_dmux_sel, signal_reg_rmux_sel,
 	 signal_alu_imux_sel, signal_alu_op[3:0], (signal_pc_control != 0)
   };
-  assign PCSEG = {reg_wdata[15:0], pc2addr[7:0]};
+  assign PCSEG = {DEBUG_SEG, pc2addr[7:0]};
+  always @ (*) begin
+	 if (SW[8]) begin
+	   DEBUG_SEG_32 = alu_src;
+	 end else if (SW[7]) begin
+	   DEBUG_SEG_32 = alu_dest;
+	 end else if (SW[6]) begin
+	   DEBUG_SEG_32 = reg_wdata;
+	 end else if (SW[5]) begin
+	   DEBUG_SEG_32 = mem_rdata;
+	 end else begin
+	   DEBUG_SEG_32 = REG_DEBUG_OUT;
+    end
+	 
+    if (SW[9]) begin
+	   DEBUG_SEG = DEBUG_SEG_32[31:16];
+	 end else begin
+		DEBUG_SEG = DEBUG_SEG_32[15:0];
+	 end
+  end
 
   //-------------------------------------
   // Instantiations
@@ -123,7 +148,9 @@ module cpu(
     .waddr(reg_waddr),
     .wdata(reg_wdata),
     .wren(signal_reg_wren),
-	 .is_upper(signal_reg_is_upper)
+	 .is_upper(signal_reg_is_upper),
+	 .DEBUG_ADDR(SW[4:0]),
+	 .DEBUG_OUT(REG_DEBUG_OUT)
   );
   
   // ALU module
