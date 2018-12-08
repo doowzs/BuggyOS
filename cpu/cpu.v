@@ -91,8 +91,9 @@ module cpu(
     .pc(pc2addr)
   );
 
+  // Instruction starts from 0x400000 to fit MARS.
   instr_memory mINSTRMEM(
-    .addr(pc2addr),
+    .addr(pc2addr - 32'h400000),
     .instr(instr)
   );
 
@@ -170,7 +171,7 @@ module cpu(
   );
   
   // All data address begins from 0x10000000 to fit MARS.
-  assign mem_paddr = alu_dest - 8'h10000000;
+  assign mem_paddr = alu_dest - 32'h10000000;
   data_memory mMEM(
 	 .address(mem_paddr),     // Rs + offset
 	 .clock(sys_clk),         // use system clock for RAM
