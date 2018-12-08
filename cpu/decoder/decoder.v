@@ -73,7 +73,11 @@ module decoder(
     // Only invalid for JR(special-08), JALR(special-09), 
     // J(02), JAL(03), BEQ(04), BNE(05) and Sx(28~2E). 
     if ((op == 6'b000000 && funct >= 6'b001000 && funct <= 6'b001001) 
+<<<<<<< HEAD
       || (op >= 6'b000010 && op <= 6'b000101)  || (op >= 6'b101000 && op <= 6'b101110)) begin
+=======
+      || (op >= 6'b000010 && op <= 6'b000101) || (op >= 6'b101000 && op <= 6'b101110)) begin
+>>>>>>> f24ad20d2859d3901e9c20d5036f08df29c1ddff
       reg_file_wren <= 0;
     end else begin
       reg_file_wren <= 1;
