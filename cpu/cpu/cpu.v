@@ -12,10 +12,11 @@ module cpu(
   wire [31:0] instr_sign_ex;
 
   // Signals
-  wire        signal_data_mem_wren;
-  wire        signal_reg_file_wren;
-  wire        signal_reg_file_dmux_sel;
-  wire        signal_reg_file_rmux_sel;
+  wire        signal_mem_wren;
+  wire        signal_reg_wren;
+  wire        signal_reg_dmux_sel;
+  wire        signal_reg_rmux_sel;
+  wire        signal_reg_is_upper;
   wire        signal_alu_imux_sel;
   wire  [3:0] signal_alu_op;
   wire  [2:0] signal_pc_control;
@@ -35,13 +36,13 @@ module cpu(
   wire        alu_eflags_zf;
 
   // Data Memory
-  wire [31:0] data_mem_paddr;
-  wire [31:0] data_mem_rdata;
+  wire [31:0] mem_paddr;
+  wire [31:0] mem_rdata;
   
   // Debug Output
   assign LEDR = {
-    signal_data_mem_wren, signal_reg_file_wren,
-	 signal_reg_file_dmux_sel, signal_reg_file_rmux_sel,
+    signal_mem_wren, signal_reg_wren,
+	 signal_reg_dmux_sel, signal_reg_rmux_sel,
 	 signal_alu_imux_sel, signal_alu_op[3:0], (signal_pc_control != 0)
   };
   assign PCSEG = {reg_wdata[15:0], pc2addr[7:0]};
@@ -72,10 +73,11 @@ module cpu(
   decoder mDECODER(
     .instr(instr),
     .alu_zf(alu_eflags_zf),
-    .data_mem_wren(signal_data_mem_wren),
-    .reg_file_wren(signal_reg_file_wren),
-    .reg_file_dmux_sel(signal_reg_file_dmux_sel),
-    .reg_file_rmux_sel(signal_reg_file_rmux_sel),
+    .mem_wren(signal_mem_wren),
+    .reg_wren(signal_reg_wren),
+    .reg_dmux_sel(signal_reg_dmux_sel),
+    .reg_rmux_sel(signal_reg_rmux_sel),
+	 .reg_is_upper(signal_reg_is_upper),
     .alu_imux_sel(signal_alu_imux_sel),
     .alu_op(signal_alu_op),
     .pc_control(signal_pc_control)
@@ -89,16 +91,16 @@ module cpu(
   mux21 #(.DATA_WIDTH(5)) mRegMUX(
     .in0(reg_raddr1),
     .in1(instr[15:11]),
-    .sel(signal_reg_file_rmux_sel),
+    .sel(signal_reg_rmux_sel),
     .out(reg_waddr)
   );
   
   // if D-mux signal is valid, load result from ALU to register;
-  // otherwise, load data_mem_rdata read from memory.
+  // otherwise, load mem_rdata read from memory.
   mux21 mMEMMUX(
-    .in0(data_mem_rdata),
+    .in0(mem_rdata),
 	 .in1(alu_dest),
-	 .sel(signal_reg_file_dmux_sel),
+	 .sel(signal_reg_dmux_sel),
 	 .out(reg_wdata)
   );
   
@@ -120,7 +122,8 @@ module cpu(
     .rdata1(reg_rdata1),
     .waddr(reg_waddr),
     .wdata(reg_wdata),
-    .wren(signal_reg_file_wren)
+    .wren(signal_reg_wren),
+	 .is_upper(signal_reg_is_upper)
   );
   
   // ALU module
@@ -134,12 +137,12 @@ module cpu(
   );
   
   // All data address begins from 0x10000000 to fit MARS.
-  assign data_mem_paddr = alu_dest - 8'h10000000;
+  assign mem_paddr = alu_dest - 8'h10000000;
   data_memory mMEM(
-	 .address(data_mem_paddr), // Rs + offset
-	 .clock(sys_clk),          // use system clock for RAM
-	 .data(reg_rdata1),        // Rt
-	 .wren(signal_data_mem_wren),
-	 .q(data_mem_rdata)
+	 .address(mem_paddr),     // Rs + offset
+	 .clock(sys_clk),         // use system clock for RAM
+	 .data(reg_rdata1),       // Rt
+	 .wren(signal_mem_wren),
+	 .q(mem_rdata)
   );
 endmodule

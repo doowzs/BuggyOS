@@ -6,7 +6,8 @@ module register_file(
   output  [31:0]  rdata1,
   input   [4:0]   waddr,
   input   [31:0]  wdata,
-  input           wren
+  input           wren,
+  input           is_upper
 );
 
   reg [31:0] reg_file [31:0];
@@ -23,8 +24,11 @@ module register_file(
 
   always @ (posedge clk) begin
     if (wren) begin
-      //$display("REG[%d]=%d->%d", waddr, reg_file[waddr], wdata);
-      reg_file[waddr] <= wdata;
+	   if (is_upper) begin
+		  reg_file[waddr] <= (wdata << 16);
+		end else begin
+        reg_file[waddr] <= wdata;
+		end
     end
   end
 

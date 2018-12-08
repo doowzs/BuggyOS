@@ -215,11 +215,7 @@ set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (Verilog)"
 set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
 set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
 set_global_assignment -name EDA_TEST_BENCH_ENABLE_STATUS TEST_BENCH_MODE -section_id eda_simulation
-set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH register_file_vlg_tst -section_id eda_simulation
-set_global_assignment -name EDA_TEST_BENCH_NAME register_file_vlg_tst -section_id eda_simulation
-set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id register_file_vlg_tst
-set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME register_file_vlg_tst -section_id register_file_vlg_tst
-set_global_assignment -name EDA_TEST_BENCH_FILE simulation/modelsim/register_file.vt -section_id register_file_vlg_tst
+set_global_assignment -name EDA_NATIVELINK_SIMULATION_TEST_BENCH finallab_vlg_tst -section_id eda_simulation
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
@@ -373,8 +369,10 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to PS2_DAT
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to PS2_DAT2
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FPGA_I2C_SCLK
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to FPGA_I2C_SDAT
-set_global_assignment -name VERILOG_FILE io/segment/hex_display.v
-set_global_assignment -name VERILOG_FILE cpu/cpu/cpu.v
+set_global_assignment -name EDA_TEST_BENCH_NAME finallab_vlg_tst -section_id eda_simulation
+set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id finallab_vlg_tst
+set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME finallab_vlg_tst -section_id finallab_vlg_tst
+set_global_assignment -name EDA_TEST_BENCH_FILE simulation/modelsim/finallab.vt -section_id finallab_vlg_tst
 set_global_assignment -name VERILOG_FILE cpu/program_counter/program_counter.v
 set_global_assignment -name VERILOG_FILE cpu/mux21/mux21.v
 set_global_assignment -name VERILOG_FILE cpu/sign_ex/sign_ex.v
@@ -383,10 +381,12 @@ set_global_assignment -name VERILOG_FILE cpu/instr_memory/instr_memory.v
 set_global_assignment -name VERILOG_FILE cpu/data_memory/data_memory.v
 set_global_assignment -name VERILOG_FILE cpu/alu/alu.v
 set_global_assignment -name VERILOG_FILE cpu/decoder/decoder.v
+set_global_assignment -name VERILOG_FILE cpu/cpu/cpu.v
 set_global_assignment -name SDC_FILE finallab.sdc
 set_global_assignment -name VERILOG_FILE finallab.v
 set_global_assignment -name SDC_FILE finallab.SDC
 set_global_assignment -name QIP_FILE cpu/data_memory/data_memory.qip
+set_global_assignment -name VERILOG_FILE io/segment/hex_display.v
 set_global_assignment -name VERILOG_FILE io/segment/segment.v
 set_global_assignment -name VERILOG_FILE io/io.v
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
