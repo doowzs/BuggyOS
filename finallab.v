@@ -76,7 +76,37 @@ module finallab(
 //  REG/WIRE declarations
 //=======================================================
 
+	wire [9:0] wire_ledr;
+	wire [3:0] wire_seg0;
+	wire [3:0] wire_seg1;
+	wire [3:0] wire_seg2;
+	wire [3:0] wire_seg3;
+	wire [3:0] wire_seg4;
+	wire [3:0] wire_seg5;
 
+	cpu mCPU(
+		.clk(KEY[0]),
+		.rst(~KEY[3]),
+		.LEDR(wire_ledr),
+		.PCSEG({wire_seg1[3:0], wire_seg0[3:0]})
+	);
+	
+	io mIO(
+		.led_in(wire_ledr),
+		.led_out(LEDR),
+		.seg_in0(wire_seg0),
+		.seg_out0(HEX0),
+		.seg_in1(wire_seg1),
+		.seg_out1(HEX1),
+		.seg_in2(wire_seg2),
+		.seg_out2(HEX2),
+		.seg_in3(wire_seg3),
+		.seg_out3(HEX3),
+		.seg_in4(wire_seg4),
+		.seg_out4(HEX4),
+		.seg_in5(wire_seg5),
+		.seg_out5(HEX5)
+	);
 
 
 //=======================================================

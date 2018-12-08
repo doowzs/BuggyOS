@@ -1,6 +1,8 @@
 module cpu(
   input clk,
-  input rst
+  input rst,
+  output [9:0] LEDR,
+  output [7:0] PCSEG
 );
 
   // Program counter and instruction
@@ -33,6 +35,8 @@ module cpu(
 
   // Data Memory
   wire [31:0] data_mem_rdata;
+  
+  assign PCSEG = pc2addr;
 
   //-------------------------------------
   // Instantiations
@@ -59,7 +63,7 @@ module cpu(
 
   decoder mDECODER(
     .instr(instr),
-    .alu_zero(alu_eflags_zf),
+    .alu_zf(alu_eflags_zf),
     .data_mem_wren(signal_data_mem_wren),
     .reg_file_wren(signal_reg_file_wren),
     .reg_file_dmux_sel(signal_reg_file_dmux_sel),
@@ -101,7 +105,8 @@ module cpu(
     .rdata1(reg_rdata1),
     .waddr(reg_waddr),
     .wdata(reg_wdata),
-    .wren(signal_reg_file_wren)
+    .wren(signal_reg_file_wren),
+	 .LEDR(LEDR)
   );
   
   alu mALU(
