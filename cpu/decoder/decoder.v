@@ -22,7 +22,7 @@ module decoder(
   wire  [5:0]   op;
   assign op = instr[31:26];
 
-  always @ (instr) begin
+  always @ (*) begin
     // Determine addr, imm, rs/t/d, shamt, funct
     // for different types of instruction.
     casex (op)
@@ -73,7 +73,7 @@ module decoder(
     // Only invalid for JR(special-08), JALR(special-09), 
     // J(02), JAL(03), BEQ(04), BNE(05). 
     if ((op == 6'b000000 && funct >= 6'b001000 && funct <= 6'b001001) 
-      | (op >= 6'b000010 && op <= 6'b000101)) begin
+      || (op >= 6'b000010 && op <= 6'b000101)) begin
       reg_file_wren <= 0;
     end else begin
       reg_file_wren <= 1;
@@ -143,7 +143,7 @@ module decoder(
     end
 	 
     // 7 - PC Control
-    #1 // avoid race condition
+    #0.5 // avoid race condition
     if (op == 6'b000010 || op == 6'b000010) begin
       // J(02) | JAL(03)
       pc_control <= 3'b001;

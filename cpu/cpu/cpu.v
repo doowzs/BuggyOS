@@ -92,10 +92,11 @@ module cpu(
   
   mux21 mMEMMUX(
     .in0(data_mem_rdata),
-	 .in1(alu_result),
+	 .in1(alu_dest),
 	 .sel(signal_reg_file_dmux_sel),
 	 .out(reg_wdata)
   );
+  assign LEDR = reg_wdata[9:0];
   
   register_file mREG(
     .clk(clk),
@@ -105,8 +106,7 @@ module cpu(
     .rdata1(reg_rdata1),
     .waddr(reg_waddr),
     .wdata(reg_wdata),
-    .wren(signal_reg_file_wren),
-	 .LEDR(LEDR)
+    .wren(signal_reg_file_wren)
   );
   
   alu mALU(

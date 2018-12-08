@@ -6,15 +6,13 @@ module register_file(
   output  [31:0]  rdata1,
   input   [4:0]   waddr,
   input   [31:0]  wdata,
-  input           wren,
-  output  [9:0]   LEDR
+  input           wren
 );
 
   reg [31:0] reg_file [31:0];
 
   assign rdata0 = reg_file[raddr0];
   assign rdata1 = reg_file[raddr1];
-  assign LEDR = reg_file[1][9:0];
 
   integer i;
   initial begin
