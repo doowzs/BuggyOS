@@ -6,7 +6,7 @@ module decoder(
   output reg            reg_wren,
   output reg            reg_dmux_sel,
   output reg            reg_rmux_sel,
-  output reg				reg_is_upper,
+  output reg		    reg_is_upper,
   output reg            alu_imux_sel,
   output reg    [3:0]   alu_op,
   output reg    [2:0]   pc_control
