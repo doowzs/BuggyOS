@@ -65,9 +65,8 @@
 !*.tcl
 
 finallab\.qws
-
 db/
-
 incremental_db/
-
 greybox_tmp/
+simulation/modelsim/*
+!simulation/modelsim/*.vt

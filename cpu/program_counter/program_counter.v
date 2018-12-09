@@ -8,13 +8,19 @@ module program_counter(
   output reg [31:0]  pc
 );
 
+  parameter DEFAULT_ENTRY = 32'h00400000;
+
   wire [31:0] seq_pc; // next pc address
   assign seq_pc = pc + 4;
+  
+  initial begin
+    pc <= DEFAULT_ENTRY;
+  end
 
   always @ (posedge clk or posedge rst) begin
     if (rst) begin
       // RESET
-      pc <= 32'h00000000;
+      pc <= DEFAULT_ENTRY;
     end else begin
       case (pc_control)
         3'b000: begin

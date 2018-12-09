@@ -84,11 +84,17 @@ module finallab(
 	wire [3:0] wire_seg5;
 
 	cpu mCPU(
-		.clk(KEY[0]),
+		.clk(~KEY[0]),
 		.sys_clk(CLOCK_50),
-		.rst(~KEY[3]),
+		.rst((~KEY[3]) & (~KEY[0])),
+		.SW(SW),
+		.KEY(KEY),
 		.LEDR(wire_ledr),
-		.PCSEG({wire_seg1[3:0], wire_seg0[3:0]})
+		.SEG({
+			wire_seg5[3:0], wire_seg4[3:0],
+			wire_seg3[3:0], wire_seg2[3:0],
+			wire_seg1[3:0], wire_seg0[3:0]
+		})
 	);
 	
 	io mIO(
