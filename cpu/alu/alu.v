@@ -55,7 +55,7 @@ module alu(
 
       // Set on less than
       4'b0111: begin
-        rd <= (rs < rt) ? -1 : 0;
+        rd <= ($signed(rs) < $signed(rt)) ? 1 : 0;
         of <= 0;
       end
 
