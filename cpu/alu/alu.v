@@ -2,6 +2,7 @@ module alu(
   input       [3:0] op,
   input      [31:0] rs,
   input      [31:0] rt,
+  input       [4:0] sa,
   output reg [31:0] rd,
   output            zf,
   output reg        of
@@ -60,19 +61,19 @@ module alu(
 
       // SHL
       4'b1000: begin
-        rd <= rs << rt;
+        rd <= rs << sa;
         of <= 0;
       end
 
       // SHR
       4'b1001: begin
-        rd <= rs >> rt;
+        rd <= rs >> sa;
         of <= 0;
       end
 
       // SAR
       4'b1010: begin
-        rd <= rs >>> rt;
+        rd <= rs >>> sa;
         of <= 0;
       end
 
