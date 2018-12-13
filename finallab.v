@@ -87,14 +87,16 @@ module finallab(
 	wire  [7:0] wire_io_wdata;
 	wire  [7:0] wire_io_rdata;
 	
+	wire rst = (~KEY[3]) & (~KEY[0]);
+	
 	clock_generator #(25000000) my_vgaclk(
-		CLOCK_50, KEY[0], 1'b1, VGA_CLK
+		CLOCK_50, ~rst, 1'b1, VGA_CLK
 	);
 
 	cpu mCPU(
 		.clk(~KEY[0]),
 		.sys_clk(CLOCK_50),
-		.rst((~KEY[3]) & (~KEY[0])),
+		.rst(rst),
 		.SW(SW),
 		.KEY(KEY),
 		.io_addr(wire_io_addr),
@@ -110,7 +112,7 @@ module finallab(
 	);
 	
 	io mIO(
-		.rst((~KEY[3]) & (~KEY[0])),
+		.rst(rst),
 		.sys_clk(CLOCK_50),
 		.led_in(wire_ledr),
 		.led_out(LEDR),
