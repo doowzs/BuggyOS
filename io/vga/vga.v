@@ -2,8 +2,8 @@ module vga(
 	input					vga_clk,
 	input 				sys_clk,
 	input					rst,
-	input		 [7:0]	vga_ascii,
-	output  	[15:0] 	vga_addr, // 0 ~ 2099
+	input		[31:0]	vga_ascii,
+	output  	[31:0] 	vga_addr, // 0 ~ 2099
 	output				hsync,
 	output				vsync,
 	output				valid,
@@ -22,7 +22,7 @@ module vga(
 	parameter v_backporch = 515;
 	parameter v_total = 525;
 	
-	wire [15:0] font_addr;
+	wire [31:0] font_addr;
 	wire [11:0] font_data;
 	assign font_addr = {vga_ascii[7:0], 4'b0000} + dy;
 	

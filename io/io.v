@@ -18,10 +18,10 @@ module io(
 	output [6:0] seg_out4,
 	output [6:0] seg_out5,
 	// VGA and PS2 Keyboard
-	output [15:0] vk_addr,
+	output [31:0] vk_addr,
 	output        vk_wren,
-	output  [7:0] vk_wdata,
-	input   [7:0] vk_rdata,
+	output [31:0] vk_wdata,
+	input  [31:0] vk_rdata,
 	input         vga_clk,
 	output        vga_hsync,
 	output        vga_vsync,

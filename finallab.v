@@ -82,10 +82,10 @@ module finallab(
 	wire [3:0] wire_seg3;
 	wire [3:0] wire_seg4;
 	wire [3:0] wire_seg5;
-	wire [15:0] wire_io_addr;
+	wire [31:0] wire_io_addr;
 	wire        wire_io_wren;
-	wire  [7:0] wire_io_wdata;
-	wire  [7:0] wire_io_rdata;
+	wire [31:0] wire_io_wdata;
+	wire [31:0] wire_io_rdata;
 	
 	wire rst = (~KEY[3]) & (~KEY[0]);
 	
