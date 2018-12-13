@@ -28,10 +28,16 @@ module io(
 	output        vga_valid,
 	output  [7:0] vga_data_r,
 	output  [7:0] vga_data_g,
-	output  [7:0] vga_data_b
+	output  [7:0] vga_data_b,
+	input         ps2_clk,
+	input         ps2_data
 );
 
+	parameter key_addr = 31'h000020D0;
+	wire [31:0] vga_addr;
+
 	assign led_out = led_in;
+	assign vk_addr = (vk_wdata == 0) ? vga_addr : key_addr;
 
 	segment mSEG(
 		.src0(seg_in0),
@@ -53,13 +59,21 @@ module io(
 		.sys_clk(sys_clk),
 		.rst(rst),
 		.vga_ascii(vk_rdata),
-		.vga_addr(vk_addr),
+		.vga_addr(vga_addr),
 		.hsync(vga_hsync),
 		.vsync(vga_vsync),
 		.valid(vga_valid),
 		.vga_r(vga_data_r),
 		.vga_g(vga_data_g),
 		.vga_b(vga_data_b)
+	);
+	
+	key mKEY(
+		.ps2_clk(ps2_clk),
+		.sys_clk(sys_clk),
+		.rst(rst),
+		.ps2_data(ps2_data),
+		.ps2_ascii(vk_wdata)
 	);
 	
 endmodule 

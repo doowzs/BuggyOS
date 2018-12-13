@@ -143,7 +143,9 @@ module finallab(
 		.vga_valid(VGA_BLANK_N),
 		.vga_data_r(VGA_R),
 		.vga_data_g(VGA_G),
-		.vga_data_b(VGA_B)
+		.vga_data_b(VGA_B),
+		.ps2_clk(PS2_CLK),
+		.ps2_data(PS2_DAT)
 	);
 
 
