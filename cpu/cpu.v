@@ -34,6 +34,7 @@ module cpu(
   // ALU
   wire [31:0] alu_src;
   wire [31:0] alu_dest;
+  wire  [4:0] alu_shamt;
   wire        alu_eflags_of;
   wire        alu_eflags_zf;
 
@@ -49,33 +50,34 @@ module cpu(
   wire [31:0] REG_DEBUG_OUT;
   assign LEDR = {
     signal_mem_wren, signal_reg_wren,
-	 signal_reg_dmux_sel, signal_reg_rmux_sel,
-	 signal_alu_imux_sel, signal_alu_op[3:0], (signal_pc_control != 0)
+	  signal_reg_dmux_sel, signal_reg_rmux_sel,
+	  signal_alu_imux_sel, signal_alu_op[3:0], (signal_pc_control != 0)
   };
   always @ (*) begin
     if (SW == 0) begin
-	   SEG = pc2addr[23:0];
+	    SEG = pc2addr[23:0];
     end else begin
-	   if (SW[9]) begin
-		  DEBUG_SEG_32 = reg_rdata0;
-	   end else if (SW[8]) begin
-	     DEBUG_SEG_32 = alu_src;
-	   end else if (SW[7]) begin
-	     DEBUG_SEG_32 = alu_dest;
-	   end else if (SW[6]) begin
-	     DEBUG_SEG_32 = reg_wdata;
-	   end else if (SW[5]) begin
-	     DEBUG_SEG_32 = mem_rdata;
-	   end else begin
-		  DEBUG_SEG_32 = REG_DEBUG_OUT;
+	    if (SW[9]) begin
+		    DEBUG_SEG_32 = reg_rdata0;
+	    end else if (SW[8]) begin
+	      DEBUG_SEG_32 = alu_src;
+	    end else if (SW[7]) begin
+	      DEBUG_SEG_32 = alu_dest;
+	    end else if (SW[6]) begin
+	      DEBUG_SEG_32 = reg_wdata;
+	    end else if (SW[5]) begin
+	      DEBUG_SEG_32 = mem_rdata;
+	    end else begin
+		    DEBUG_SEG_32 = REG_DEBUG_OUT;
       end
+ 
       if (~KEY[2]) begin
-	     DEBUG_SEG = DEBUG_SEG_32[31:16];
-	   end else begin
-	     DEBUG_SEG = DEBUG_SEG_32[15:0];
-	   end
+  	    DEBUG_SEG = DEBUG_SEG_32[31:16];
+ 	    end else begin
+	      DEBUG_SEG = DEBUG_SEG_32[15:0];
+	    end
       SEG = {DEBUG_SEG, pc2addr[7:0]};
-	 end
+	  end
   end
 
   //-------------------------------------
@@ -109,7 +111,7 @@ module cpu(
     .reg_wren(signal_reg_wren),
     .reg_dmux_sel(signal_reg_dmux_sel),
     .reg_rmux_sel(signal_reg_rmux_sel),
-	 .reg_is_upper(signal_reg_is_upper),
+	  .reg_is_upper(signal_reg_is_upper),
     .alu_imux_sel(signal_alu_imux_sel),
     .alu_op(signal_alu_op),
     .pc_control(signal_pc_control)
@@ -131,40 +133,42 @@ module cpu(
   // otherwise, load mem_rdata read from memory.
   mux21 mMEMMUX(
     .in0(mem_rdata),
-	 .in1(alu_dest),
-	 .sel(signal_reg_dmux_sel),
-	 .out(reg_wdata)
+	  .in1(alu_dest),
+	  .sel(signal_reg_dmux_sel),
+	  .out(reg_wdata)
   );
   
   // if I-mux signal is valid, use the sign extended immediate from instruction;
   // otherwise, use rt register for second operand.
   mux21 mIMMMUX(
     .in0(reg_rdata1),
-	 .in1(instr_sign_ex),
-	 .sel(signal_alu_imux_sel),
-	 .out(alu_src)
+	  .in1(instr_sign_ex),
+	  .sel(signal_alu_imux_sel),
+	  .out(alu_src)
   );
   
   // read/write from registers.
   register_file mREG(
     .clk(clk),
-	 .raddr0(reg_raddr0),
+	  .raddr0(reg_raddr0),
     .rdata0(reg_rdata0),
     .raddr1(reg_raddr1),
     .rdata1(reg_rdata1),
     .waddr(reg_waddr),
     .wdata(reg_wdata),
     .wren(signal_reg_wren),
-	 .is_upper(signal_reg_is_upper),
-	 .DEBUG_ADDR(SW[4:0]),
-	 .DEBUG_OUT(REG_DEBUG_OUT)
+	  .is_upper(signal_reg_is_upper),
+	  .DEBUG_ADDR(SW[4:0]),
+	  .DEBUG_OUT(REG_DEBUG_OUT)
   );
   
   // ALU module
+  assign alu_shamt = instr[10:6];
   alu mALU(
     .op(signal_alu_op),
     .rs(reg_rdata0),
     .rt(alu_src),
+    .sa(alu_shamt),
     .rd(alu_dest),
     .zf(alu_eflags_zf),
     .of(alu_eflags_of)
