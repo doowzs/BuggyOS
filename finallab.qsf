@@ -373,12 +373,14 @@ set_global_assignment -name EDA_TEST_BENCH_NAME finallab_vlg_tst -section_id eda
 set_global_assignment -name EDA_DESIGN_INSTANCE_NAME NA -section_id finallab_vlg_tst
 set_global_assignment -name EDA_TEST_BENCH_MODULE_NAME finallab_vlg_tst -section_id finallab_vlg_tst
 set_global_assignment -name EDA_TEST_BENCH_FILE simulation/modelsim/finallab.vt -section_id finallab_vlg_tst
+set_global_assignment -name QIP_FILE io/vga/vga_font.qip
+set_global_assignment -name VERILOG_FILE io/vga/vga_control.v
+set_global_assignment -name VERILOG_FILE io/vga/clock_generator.v
 set_global_assignment -name VERILOG_FILE cpu/program_counter/program_counter.v
 set_global_assignment -name VERILOG_FILE cpu/mux21/mux21.v
 set_global_assignment -name VERILOG_FILE cpu/sign_ex/sign_ex.v
 set_global_assignment -name VERILOG_FILE cpu/register_file/register_file.v
 set_global_assignment -name VERILOG_FILE cpu/instr_memory/instr_memory.v
-set_global_assignment -name VERILOG_FILE cpu/data_memory/data_memory.v
 set_global_assignment -name VERILOG_FILE cpu/alu/alu.v
 set_global_assignment -name VERILOG_FILE cpu/decoder/decoder.v
 set_global_assignment -name VERILOG_FILE cpu/cpu.v
@@ -389,4 +391,5 @@ set_global_assignment -name QIP_FILE cpu/data_memory/data_memory.qip
 set_global_assignment -name VERILOG_FILE io/segment/hex_display.v
 set_global_assignment -name VERILOG_FILE io/segment/segment.v
 set_global_assignment -name VERILOG_FILE io/io.v
+set_global_assignment -name VERILOG_FILE io/vga/vga.v
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

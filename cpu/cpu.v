@@ -2,8 +2,15 @@ module cpu(
   input clk,
   input sys_clk,
   input rst,
+  // Switch and Keys
   input [9:0] SW,
   input [3:0] KEY,
+  // VGA and PS2 Keyboard
+  input  [15:0] io_addr,
+  input         io_wren,
+  input   [7:0] io_wdata,
+  output  [7:0] io_rdata,
+  // LEDR and 7-SEG
   output [9:0] LEDR,
   output reg [23:0] SEG
 );
@@ -175,12 +182,19 @@ module cpu(
   );
   
   // All data address begins from 0x10000000 to fit MARS.
+  // A port is used for CPU;
+  // B port is used for I/O.
   assign mem_paddr = alu_dest - 32'h10000000;
   data_memory mMEM(
-	 .address(mem_paddr),     // Rs + offset
-	 .clock(sys_clk),         // use system clock for RAM
-	 .data(reg_rdata1),       // Rt
-	 .wren(signal_mem_wren),
-	 .q(mem_rdata)
+    .address_a(mem_paddr),
+	 .address_b(io_addr),
+	 .clock_a(sys_clk),
+	 .clock_b(sys_clk),
+	 .data_a(reg_rdata1),    // Save Rt register
+	 .data_b(io_wdata),
+	 .wren_a(signal_mem_wren),
+	 .wren_b(io_wren),
+	 .q_a(mem_rdata),
+	 .q_b(io_rdata),
   );
 endmodule
