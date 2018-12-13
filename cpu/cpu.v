@@ -186,15 +186,15 @@ module cpu(
   // B port is used for I/O.
   assign mem_paddr = alu_dest - 32'h10000000;
   data_memory mMEM(
-    .address_a (mem_paddr),
-	 .address_b (io_addr),
-	 .clock0 (sys_clk),
-	 .clock1 (sys_clk),
-	 .data_a (reg_rdata1),    // Save Rt register
-	 .data_b (io_wdata),
-	 .wren_a (signal_mem_wren),
-	 .wren_b (io_wren),
-	 .q_a (mem_rdata),
-	 .q_b (io_rdata),
+    .address_a(mem_paddr),
+	 .address_b(io_addr),
+	 .clock_a(sys_clk),
+	 .clock_b(sys_clk),
+	 .data_a(reg_rdata1),    // Save Rt register
+	 .data_b(io_wdata),
+	 .wren_a(signal_mem_wren),
+	 .wren_b(io_wren),
+	 .q_a(mem_rdata),
+	 .q_b(io_rdata),
   );
 endmodule
