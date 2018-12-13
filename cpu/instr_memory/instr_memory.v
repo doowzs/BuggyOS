@@ -10,7 +10,7 @@ module instr_memory(
   reg [31:0] instr_memory [255:0];
   
   initial begin
-    $readmemh("program/branch.mips", instr_memory);
+    $readmemh("program/logic.mips", instr_memory);
   end
 
   assign instr = instr_memory[paddr];
