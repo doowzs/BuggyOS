@@ -88,13 +88,18 @@ module finallab(
 	wire [31:0] wire_io_rdata;
 	
 	wire rst = (~KEY[3]) & (~KEY[0]);
+	wire CPU_CLK;
 	
 	clock_generator #(25000000) my_vgaclk(
 		CLOCK_50, ~rst, 1'b1, VGA_CLK
 	);
+	
+	clock_generator #(10) my_cpuclk(
+		CLOCK_50, ~rst, ~KEY[0], CPU_CLK
+	);
 
 	cpu mCPU(
-		.clk(~KEY[0]),
+		.clk(CPU_CLK),
 		.sys_clk(CLOCK_50),
 		.rst(rst),
 		.SW(SW),

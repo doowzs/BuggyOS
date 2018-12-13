@@ -115,7 +115,7 @@ module vga(
 	assign v_valid = (y_cnt > v_active) & (y_cnt <= v_backporch);
 	assign valid = h_valid & v_valid;
 
-	assign vga_addr = valid ? ({by[5:0], 6'h0} + {by[9:0], 2'b00} + {1'b0, by[9:0], 1'b0} + {2'b00, bx}) : 12'h0;
+	assign vga_addr = valid ? {({by[5:0], 6'h0} + {by[9:0], 2'b00} + {1'b0, by[9:0], 1'b0} + {2'b00, bx}), 2'b00} : 32'h0;
 
 	assign vga_r = font_data[dx] == 1 ? 8'hff : 8'h00;
 	assign vga_g = font_data[dx] == 1 ? 8'hff : 8'h00;
