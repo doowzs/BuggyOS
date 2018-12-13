@@ -378,7 +378,6 @@ set_global_assignment -name VERILOG_FILE cpu/mux21/mux21.v
 set_global_assignment -name VERILOG_FILE cpu/sign_ex/sign_ex.v
 set_global_assignment -name VERILOG_FILE cpu/register_file/register_file.v
 set_global_assignment -name VERILOG_FILE cpu/instr_memory/instr_memory.v
-set_global_assignment -name VERILOG_FILE cpu/data_memory/data_memory.v
 set_global_assignment -name VERILOG_FILE cpu/alu/alu.v
 set_global_assignment -name VERILOG_FILE cpu/decoder/decoder.v
 set_global_assignment -name VERILOG_FILE cpu/cpu.v
