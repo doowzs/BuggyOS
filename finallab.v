@@ -82,6 +82,14 @@ module finallab(
 	wire [3:0] wire_seg3;
 	wire [3:0] wire_seg4;
 	wire [3:0] wire_seg5;
+	wire [15:0] wire_io_addr;
+	wire        wire_io_wren;
+	wire  [7:0] wire_io_wdata;
+	wire  [7:0] wire_io_rdata;
+	
+	clock_generator #(25000000) my_vgaclk(
+		CLOCK_50, KEY[0], 1'b1, VGA_CLK
+	);
 
 	cpu mCPU(
 		.clk(~KEY[0]),
@@ -89,6 +97,10 @@ module finallab(
 		.rst((~KEY[3]) & (~KEY[0])),
 		.SW(SW),
 		.KEY(KEY),
+		.io_addr(wire_io_addr),
+		.io_wren(wire_io_wren),
+		.io_wdata(wire_io_wdata),
+		.io_rdata(wire_io_rdata),
 		.LEDR(wire_ledr),
 		.SEG({
 			wire_seg5[3:0], wire_seg4[3:0],
@@ -98,6 +110,8 @@ module finallab(
 	);
 	
 	io mIO(
+		.rst((~KEY[3]) & (~KEY[0])),
+		.sys_clk(CLOCK_50),
 		.led_in(wire_ledr),
 		.led_out(LEDR),
 		.seg_in0(wire_seg0),
@@ -111,7 +125,18 @@ module finallab(
 		.seg_in4(wire_seg4),
 		.seg_out4(HEX4),
 		.seg_in5(wire_seg5),
-		.seg_out5(HEX5)
+		.seg_out5(HEX5),
+		.vk_addr(wire_io_addr),
+		.vk_wren(wire_io_wren),
+		.vk_wdata(wire_io_wdata),
+		.vk_rdata(wire_io_rdata),
+		.vga_clk(VGA_CLK),
+		.vga_hsync(VGA_HS),
+		.vga_vsync(VGA_VS),
+		.vga_valid(VGA_BLANK_N),
+		.vga_data_r(VGA_R),
+		.vga_data_g(VGA_G),
+		.vga_data_b(VGA_B)
 	);
 
 
