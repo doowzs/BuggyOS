@@ -6,10 +6,10 @@ module cpu(
   input [9:0] SW,
   input [3:0] KEY,
   // VGA and PS2 Keyboard
-  input  [31:0] io_addr,
+  input  [15:0] io_addr,
   input         io_wren,
-  input  [31:0] io_wdata,
-  output [31:0] io_rdata,
+  input   [7:0] io_wdata,
+  output  [7:0] io_rdata,
   // LEDR and 7-SEG
   output [9:0] LEDR,
   output reg [23:0] SEG

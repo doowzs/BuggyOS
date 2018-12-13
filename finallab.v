@@ -82,10 +82,10 @@ module finallab(
 	wire [3:0] wire_seg3;
 	wire [3:0] wire_seg4;
 	wire [3:0] wire_seg5;
-	wire [31:0] wire_io_addr;
+	wire [15:0] wire_io_addr;
 	wire        wire_io_wren;
-	wire [31:0] wire_io_wdata;
-	wire [31:0] wire_io_rdata;
+	wire  [7:0] wire_io_wdata;
+	wire  [7:0] wire_io_rdata;
 	
 	clock_generator #(25000000) my_vgaclk(
 		CLOCK_50, KEY[0], 1'b1, VGA_CLK
