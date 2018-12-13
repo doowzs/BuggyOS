@@ -227,6 +227,7 @@ module decoder(
 		// 22 LWL   is not implemented!
 		// 23 LW
 		6'b100011: begin
+		  alu_op <= ALU_ADDU;
         reg_dmux_sel <= 0;
       end 
 		// 24 LBU   is not implemented!
@@ -237,6 +238,7 @@ module decoder(
 		// 2A SWL   is not implemented!
 		// 2B SW
 		6'b101011: begin
+		  alu_op <= ALU_ADDU;
 		  mem_wren <= 1;
 		  reg_wren <= 0;
 		end
