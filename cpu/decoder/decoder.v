@@ -142,7 +142,7 @@ module decoder(
 			 end
 			 // 00-23 SUBU
 			 6'b100011: begin
-			   alu_op <= ALU_SUB;
+			   alu_op <= ALU_SUBU;
 			 end
 			 // 00-24 AND
 			 6'b100100: begin
@@ -180,10 +180,12 @@ module decoder(
 		end
 		// 04 BEQ
 		6'b000100: begin
+			alu_op <= ALU_SUB;
 		  reg_wren <= 0;
 		end
 		// 05 BNE
 		6'b000101: begin
+			alu_op <= ALU_SUB;
 		  reg_wren <= 0;
 		end
 		// 06 BLEZ  is not implemented!
