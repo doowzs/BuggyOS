@@ -61,19 +61,19 @@ module alu(
 
       // SHL
       4'b1000: begin
-        rd <= rs << sa;
+        rd <= rt << sa;
         of <= 0;
       end
 
       // SHR
       4'b1001: begin
-        rd <= rs >> sa;
+        rd <= rt >> sa;
         of <= 0;
       end
 
       // SAR
       4'b1010: begin
-        rd <= rs >>> sa;
+        rd <= $signed(rt) >>> sa;
         of <= 0;
       end
 
