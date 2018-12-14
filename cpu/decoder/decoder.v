@@ -254,7 +254,7 @@ module decoder(
     // Set PC control code according to instructions and ALU result
 	 //---------------------------------------------
 	 pc_control <= 3'b000;
-    if (op == 6'b000010 || op == 6'b000010) begin
+    if (op == 6'b000010 || op == 6'b000011) begin
       // J(02) | JAL(03)
       pc_control <= 3'b001;
     end else if (op == 6'b000000 && (funct == 6'b001000 || funct == 6'b001001)) begin
