@@ -37,7 +37,7 @@ module io(
 	
 	reg  [31:0] vk_wdata_last;
 	
-	wire [31:0] vga_addr;
+	wire [31:0] vga_addr; // this is external address of CPU's memory
 
 	assign led_out = led_in;
 	assign vk_wren = (vk_wdata_last != 0 || vk_wdata != 0);
@@ -62,8 +62,9 @@ module io(
 		.vga_clk(vga_clk),
 		.sys_clk(sys_clk),
 		.rst(rst),
-		.vga_ascii(vk_rdata),
-		.vga_addr(vga_addr),
+		.vga_refresh_wren(~vk_wren), // if there is input, do not refresh
+		.vga_refresh_data(vk_rdata),
+		.vga_refresh_addr(vga_addr),
 		.hsync(vga_hsync),
 		.vsync(vga_vsync),
 		.valid(vga_valid),
