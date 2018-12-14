@@ -17,12 +17,14 @@ module cpu(
 
   // Program counter and instruction
   wire [31:0] pc2addr;
+  wire [31:0] seq_pc;
   wire [31:0] instr;
   wire [31:0] instr_sign_ex;
 
   // Signals
   wire        signal_mem_wren;
   wire        signal_reg_wren;
+  wire        signal_jal_wren;
   wire        signal_reg_dmux_sel;
   wire        signal_reg_rmux_sel;
   wire        signal_reg_is_upper;
@@ -97,7 +99,8 @@ module cpu(
     .jmp_addr(instr[25:0]),
     .branch_offset(instr[15:0]),
     .reg_addr(reg_rdata0),
-    .pc(pc2addr)
+    .pc(pc2addr),
+	 .seq_pc(seq_pc)
   );
 
   // Instruction starts from 0x400000 to fit MARS.
@@ -116,9 +119,10 @@ module cpu(
     .alu_zf(alu_eflags_zf),
     .mem_wren(signal_mem_wren),
     .reg_wren(signal_reg_wren),
+	 .jal_wren(signal_jal_wren),
     .reg_dmux_sel(signal_reg_dmux_sel),
     .reg_rmux_sel(signal_reg_rmux_sel),
-	  .reg_is_upper(signal_reg_is_upper),
+    .reg_is_upper(signal_reg_is_upper),
     .alu_imux_sel(signal_alu_imux_sel),
     .alu_op(signal_alu_op),
     .pc_control(signal_pc_control)
@@ -157,16 +161,18 @@ module cpu(
   // read/write from registers.
   register_file mREG(
     .clk(clk),
-	  .raddr0(reg_raddr0),
+    .raddr0(reg_raddr0),
     .rdata0(reg_rdata0),
     .raddr1(reg_raddr1),
     .rdata1(reg_rdata1),
     .waddr(reg_waddr),
     .wdata(reg_wdata),
     .wren(signal_reg_wren),
-	  .is_upper(signal_reg_is_upper),
-	  .DEBUG_ADDR(SW[4:0]),
-	  .DEBUG_OUT(REG_DEBUG_OUT)
+    .is_upper(signal_reg_is_upper),
+	 .jal_wren(signal_jal_wren),
+	 .jal_data(seq_pc),
+    .DEBUG_ADDR(SW[4:0]),
+    .DEBUG_OUT(REG_DEBUG_OUT)
   );
   
   // ALU module

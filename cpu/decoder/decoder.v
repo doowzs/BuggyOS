@@ -4,9 +4,10 @@ module decoder(
   input                 alu_zf,
   output reg            mem_wren,
   output reg            reg_wren,
+  output reg            jal_wren,
   output reg            reg_dmux_sel,
   output reg            reg_rmux_sel,
-  output reg		        reg_is_upper,
+  output reg            reg_is_upper,
   output reg            alu_imux_sel,
   output reg    [3:0]   alu_op,
   output reg    [2:0]   pc_control
@@ -98,6 +99,7 @@ module decoder(
 	 
 	 mem_wren <= 0;     // Only for Sx instructions
 	 reg_wren <= 1;     // DEFAULT IS 1!!!!!!!
+	 jal_wren <= 0;	  // Only for JAL instruction
 	 reg_dmux_sel <= 1; // DEFAULT IS 1!!!!!!!
 	 reg_rmux_sel <= 0; // Only for R-type instructions
 	 reg_is_upper <= 0; // Only for LUI instruction
@@ -175,6 +177,7 @@ module decoder(
 		end
 		// 03 JAL
 		6'b000011: begin
+		  jal_wren <= 1;
 		  alu_imux_sel <= 0;
 		  reg_wren <= 0;
 		end
