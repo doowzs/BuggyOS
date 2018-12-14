@@ -33,11 +33,12 @@ module io(
 	input         ps2_data
 );
 
-	parameter key_addr = 31'h000020D0;
+	parameter key_addr = 32'h000020D0;
 	wire [31:0] vga_addr;
 
 	assign led_out = led_in;
-	assign vk_addr = (vk_wdata == 0) ? vga_addr : key_addr;
+	assign vk_wren = (vk_wdata != 0);
+	assign vk_addr = (vk_wdata != 0) ? key_addr : vga_addr;
 
 	segment mSEG(
 		.src0(seg_in0),
