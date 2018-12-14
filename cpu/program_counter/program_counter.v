@@ -1,16 +1,16 @@
 module program_counter(
   input              clk,
   input              rst,
-  input       [2:0]  pc_control,
-  input      [25:0]  jmp_addr,
-  input      [15:0]  branch_offset,
-  input      [31:0]  reg_addr,
-  output reg [31:0]  pc
+  input        [2:0] pc_control,
+  input       [25:0] jmp_addr,
+  input       [15:0] branch_offset,
+  input       [31:0] reg_addr,
+  output reg  [31:0] pc,
+  output wire [31:0] seq_pc // next pc address
 );
 
   parameter DEFAULT_ENTRY = 32'h00400000;
 
-  wire [31:0] seq_pc; // next pc address
   assign seq_pc = pc + 4;
   
   initial begin
