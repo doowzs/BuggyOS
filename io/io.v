@@ -34,11 +34,14 @@ module io(
 );
 
 	parameter key_addr = 32'h000020D0;
+	
+	reg  [31:0] vk_wdata_last;
+	
 	wire [31:0] vga_addr;
 
 	assign led_out = led_in;
-	assign vk_wren = (vk_wdata != 0);
-	assign vk_addr = (vk_wdata != 0) ? key_addr : vga_addr;
+	assign vk_wren = (vk_wdata_last != 0 || vk_wdata != 0);
+	assign vk_addr = (vk_wren) ? key_addr : vga_addr;
 
 	segment mSEG(
 		.src0(seg_in0),
@@ -76,5 +79,13 @@ module io(
 		.ps2_data(ps2_data),
 		.ps2_ascii(vk_wdata)
 	);
+	
+	initial begin
+		vk_wdata_last <= 0;
+	end
+	
+	always @ (posedge sys_clk) begin
+		vk_wdata_last <= vk_wdata;
+	end
 	
 endmodule 
