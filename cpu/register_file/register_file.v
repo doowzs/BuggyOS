@@ -8,6 +8,8 @@ module register_file(
   input   [31:0]  wdata,
   input           wren,
   input           is_upper,
+  input           jal_wren,
+  input   [31:0]  jal_data,
   input   [4:0]   DEBUG_ADDR,
   output  [31:0]  DEBUG_OUT
 );
@@ -28,10 +30,13 @@ module register_file(
   always @ (posedge clk) begin
     if (wren) begin
 	   if (is_upper) begin
-		  reg_file[waddr] <= (wdata << 16);
+        reg_file[waddr] <= (wdata << 16);
 		end else begin
         reg_file[waddr] <= wdata;
 		end
+    end
+    if (jal_wren) begin
+      reg_file[31] <= jal_data;
     end
   end
 
