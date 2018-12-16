@@ -155,6 +155,22 @@ module finallab(
 //  Structural coding
 //=======================================================
 
+	initial begin
+		signal_use_manual_clk <= 0;
+	end
+	
+	always @ (posedge KEY[1]) begin
+		signal_use_manual_clk <= ~signal_use_manual_clk;
+	end
+	
+	always @ (posedge CLOCK_50) begin
+		if (signal_use_manual_clk) begin
+			m_cpu_clk <= KEY[0];
+		end else begin
+			m_cpu_clk <= CPU_CLK;
+		end
+	end
+
 
 
 endmodule

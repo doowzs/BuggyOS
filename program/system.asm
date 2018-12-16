@@ -10,8 +10,6 @@ j main
 
 main:
 _read:
-sw $ra, ($sp)
-subi $sp, $sp, 0x4
 xor $t8, $t8, $t8
 addi $t9, $zero, 0x20
 _read_loop:
@@ -32,8 +30,6 @@ _read_write:
 add $t0, $zero, 0x8
 beq $a0, $t0, _backspace
 jal _write
-addi $sp, $sp, 0x4
-lw $ra, ($sp)
 j _read_loop
 
 print:
