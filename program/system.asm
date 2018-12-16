@@ -1,9 +1,10 @@
 _init:
 addi $k0, $zero, 0x10000000
 addi $k1, $zero, 0x10000118
-addi $sp, $zero, 0x1000fffc
-addi $s0, $zero, 0x0000000d # ENTER KEY
-addi $s1, $zero, 0x0000000a # NEW LINE
+addi $gp, $zero, 0x1000D000
+addi $sp, $zero, 0x1000FFFC
+addi $s0, $zero, 0x0000000D # ENTER KEY
+addi $s1, $zero, 0x0000000A # NEW LINE
 addi $s2, $zero, 0x100020D0 # frame end
 addi $s3, $zero, 0x100020D4 # last key
 # clear screen
@@ -37,6 +38,7 @@ beq $a0, $t0, _read_loop    # key == last
 addi $t0, $zero, 0x8
 beq $a0, $t0, _read_backspace
 _read_write:
+addi $a1, $zero, 0x1
 jal _write
 j _read_end
 _read_backspace:
@@ -53,6 +55,7 @@ lw $a0, ($t0)
 beq $a0, $zero, print_ret
 sw $t0, ($sp)
 subi $sp, $sp, 0x4
+xor $a1, $a1, $a1
 jal _write
 addi $sp, $sp, 0x4
 lw $t0, ($sp)
@@ -136,7 +139,7 @@ lw $t0, ($k0)
 beq $t0, $zero, _cursor_0
 j _cursor_1
 _cursor_0:
-addi $t0, $zero, 0x5f # print "_"
+addi $t0, $zero, 0x5F # print "_"
 j _cursor_write
 _cursor_1:
 xor $t0, $t0, $t0     # print " "
@@ -148,8 +151,12 @@ _write:
 sw $ra, ($sp)
 subi $sp, $sp, 0x4
 sw $zero, ($k0) # clear cursor
-beq $a0, $s0, _write_prompt
+beq $a0, $s0, _write_handle
 beq $a0, $s1, _write_newline
+beq $a1, $zero, _write_skip_input
+sw $a0, ($gp)
+addi $gp, $gp, 0x4
+_write_skip_input:
 sw $a0, ($k0)
 addi $k0, $k0, 0x4
 beq $k0, $k1, _write_newline
@@ -157,13 +164,12 @@ j _write_ret
 _write_newline:
 jal _newline
 j _write_ret
-_write_prompt:
-subi $a0, $k1, 0x110 # avoid "# " prompt
-sw $a0, ($sp)
-subi $sp, $sp, 0x4
+_write_handle:
+sw $zero, ($gp)
 jal _newline
-addi $sp, $sp, 0x4
-lw $a0, ($sp)
+addi $a0, $zero, 0x1000D000
+jal print
+addi $a0, $zero, 0x1000D000
 jal handle
 _write_ret:
 addi $sp, $sp, 0x4
@@ -178,6 +184,8 @@ beq $k0, $k1, _backspace_ret
 sw $zero, ($k0) # clear cursor
 subi $k0, $k0, 0x4
 sw $zero, ($k0)
+subi $gp, $gp, 0x4
+sw $zero, ($gp)
 _backspace_ret:
 addi $k1, $k1, 0x110
 addi $sp, $sp, 0x4
@@ -190,10 +198,13 @@ subi $sp, $sp, 0x4
 jal _newline
 # print "#"
 addi $a0, $zero, 0x23
+xor $a1, $a1, $a1
 jal _write
 # print " "
-xor $a0, $a0, $a0
+addi $a0, $zero, 0x20
+xor $a1, $a1, $a1
 jal _write
+addi $gp, $zero, 0x1000D000 # reset string pointer here
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
 jr $ra
