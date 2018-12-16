@@ -89,17 +89,19 @@ module finallab(
 	
 	wire rst = (~KEY[3]) & (~KEY[0]);
 	wire CPU_CLK;
+	reg  signal_use_manual_clk;
+	reg  m_cpu_clk;
 	
 	clock_generator #(25000000) my_vgaclk(
 		CLOCK_50, ~rst, 1'b1, VGA_CLK
 	);
 	
-	clock_generator #(200) my_cpuclk(
+	clock_generator #(1000) my_cpuclk(
 		CLOCK_50, ~rst, KEY[0], CPU_CLK
 	);
 
 	cpu mCPU(
-		.clk(CPU_CLK),
+		.clk(m_cpu_clk),
 		.sys_clk(CLOCK_50),
 		.rst(rst),
 		.SW(SW),
