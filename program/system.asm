@@ -14,7 +14,6 @@ sw $ra, ($sp)
 subi $sp, $sp, 0x4
 xor $t8, $t8, $t8
 addi $t9, $zero, 0x20
-jal _prompt
 _read_loop:
 lw $a0, 0x100020D0 # read this key
 lw $t0, 0x100020D4 # load last key
@@ -35,7 +34,7 @@ beq $a0, $t0, _backspace
 jal _write
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
-j _read
+j _read_loop
 
 print:
 sw $ra, ($sp)
@@ -48,6 +47,8 @@ jal _write
 addi $t0, $t0, 4
 j print_loop
 print_ret:
+jal _newline
+jal _prompt
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
 jr $ra
@@ -70,12 +71,14 @@ sw $ra, ($sp)
 subi $sp, $sp, 0x4
 beq $a0, $s0, _write_newline
 beq $a0, $s1, _write_newline
-beq $k0, $k1, _write_newline
 sw $a0, ($k0)
 addi $k0, $k0, 0x4
+beq $k0, $k1, _write_newline
 j _write_ret
 _write_newline:
 jal _newline
+bne $a0, $s0, _write_ret
+jal _prompt
 _write_ret:
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
@@ -97,6 +100,7 @@ jr $ra
 _prompt:
 sw $ra, ($sp)
 subi $sp, $sp, 0x4
+jal _newline
 # print "#"
 addi $a0, $zero, 0x23
 jal _write
@@ -105,6 +109,7 @@ xor $a0, $a0, $a0
 jal _write
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
+jr $ra
 
 _newline:
 add $k0, $zero, $k1
