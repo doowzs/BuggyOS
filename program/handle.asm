@@ -29,6 +29,7 @@ bne $v0, $zero, _cmd_01_handle
 
 #recover return addr from stack
 _handler_fin:
+addi $sp, $sp, 0x4
 lw $ra, ($sp)
 jr $ra
 
