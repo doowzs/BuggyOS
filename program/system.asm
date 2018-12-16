@@ -92,6 +92,13 @@ jal strcmp
 addi $sp, $sp, 0x4
 lw $a0, ($sp)
 bne $v0, $zero, _cmd_restart
+addi $a1, $zero, 0x100029E0
+sw $a0, ($sp) 
+subi $sp, $sp, 0x4
+jal strcmp
+addi $sp, $sp, 0x4
+lw $a0, ($sp)
+bne $v0, $zero, _cmd_clear
 j _cmd_fail
 ##### cmd handlers #####
 _cmd_01_hello:
@@ -104,6 +111,11 @@ jal print
 j _handler_ret
 _cmd_restart:
 j _init
+_cmd_clear:
+addi $a0, $zero, 0x10000000
+addi $a1, $zero, 0x100020D0
+jal _clear
+j _handler_ret
 _cmd_fail:
 addi $a0, $zero, 0x10002900
 jal print
