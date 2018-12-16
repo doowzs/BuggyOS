@@ -7,10 +7,10 @@ module instr_memory(
   assign paddr = addr[9:2];
 
   // SIZE: 256 instructions.
-  reg [31:0] instr_memory [255:0];
+  reg [31:0] instr_memory [511:0];
   
   initial begin
-    $readmemh("program/keyboard.mips", instr_memory);
+    $readmemh("program/system.mips", instr_memory);
   end
 
   assign instr = instr_memory[paddr];

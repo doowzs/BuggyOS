@@ -94,8 +94,8 @@ module finallab(
 		CLOCK_50, ~rst, 1'b1, VGA_CLK
 	);
 	
-	clock_generator #(100) my_cpuclk(
-		CLOCK_50, ~rst, 1'b1, CPU_CLK
+	clock_generator #(200) my_cpuclk(
+		CLOCK_50, ~rst, KEY[0], CPU_CLK
 	);
 
 	cpu mCPU(
