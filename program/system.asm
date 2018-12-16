@@ -69,6 +69,7 @@ jr $ra
 _write:
 sw $ra, ($sp)
 subi $sp, $sp, 0x4
+sw $zero, ($k0) # clear cursor
 beq $a0, $s0, _write_newline
 beq $a0, $s1, _write_newline
 sw $a0, ($k0)
@@ -89,6 +90,7 @@ sw $ra, ($sp)
 subi $sp, $sp, 0x4
 subi $k1, $k1, 0x118
 beq $k0, $k1, _backspace_ret
+sw $zero, ($k0) # clear cursor
 subi $k0, $k0, 0x4
 sw $zero, ($k0)
 _backspace_ret:
