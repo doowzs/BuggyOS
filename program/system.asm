@@ -65,12 +65,59 @@ lw $ra, ($sp)
 jr $ra
 
 handle:
-sw $ra, ($sp)
+sw $ra, ($sp) 
 subi $sp, $sp, 0x4
+##### cmd analyzers #####
+addi $a1, $zero, 0x10002800
+sw $a0, ($sp) 
+subi $sp, $sp, 0x4
+jal strcmp
+addi $sp, $sp, 0x4
+lw $a0, ($sp)
+bne $v0, $zero, _cmd_01_hello
+addi $a1, $zero, 0x100029A0
+sw $a0, ($sp) 
+subi $sp, $sp, 0x4
+jal strcmp
+addi $sp, $sp, 0x4
+lw $a0, ($sp)
+bne $v0, $zero, _cmd_02_meme
+j _cmd_fail
+##### cmd handlers #####
+_cmd_01_hello:
+addi $a0, $zero, 0x10002820
+jal print
+j _handler_ret
+_cmd_02_meme:
 addi $a0, $zero, 0x10006000
 jal print
+j _handler_ret
+_cmd_fail:
+addi $a0, $zero, 0x10002900
+jal print
+_handler_ret:
 jal _prompt
-_handle_ret:
+addi $sp, $sp, 0x4
+lw $ra, ($sp)
+jr $ra
+
+strcmp:
+sw $ra, ($sp) 
+subi $sp, $sp, 0x4
+add $t0, $zero, $a0
+add $t1, $zero, $a1
+addi $v0, $zero, 1 # default: return 1
+_cmp_loop:
+lw $a0, ($t0)
+lw $a1, ($t1)
+addi $t0, $t0, 0x4
+addi $t1, $t1, 0x4
+bne $a0, $a1, _cmp_false
+beq $a0, $zero, _cmp_fin
+j _cmp_loop
+_cmp_false:
+xor $v0, $v0, $v0 # failed compare
+_cmp_fin:
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
 jr $ra
@@ -102,7 +149,10 @@ _write_newline:
 jal _newline
 j _write_ret
 _write_prompt:
+add $t0, $zero, $k1
+subi $t0, $k1, 0x110 # avoid "# " prompt
 jal _newline
+add $a0, $zero, $t0
 jal handle
 _write_ret:
 addi $sp, $sp, 0x4
