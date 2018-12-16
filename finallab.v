@@ -89,17 +89,19 @@ module finallab(
 	
 	wire rst = (~KEY[3]) & (~KEY[0]);
 	wire CPU_CLK;
+	reg  signal_use_manual_clk;
+	reg  m_cpu_clk;
 	
 	clock_generator #(25000000) my_vgaclk(
 		CLOCK_50, ~rst, 1'b1, VGA_CLK
 	);
 	
-	clock_generator #(10) my_cpuclk(
-		CLOCK_50, ~rst, ~KEY[0], CPU_CLK
+	clock_generator #(1000) my_cpuclk(
+		CLOCK_50, ~rst, KEY[0], CPU_CLK
 	);
 
 	cpu mCPU(
-		.clk(CPU_CLK),
+		.clk(m_cpu_clk),
 		.sys_clk(CLOCK_50),
 		.rst(rst),
 		.SW(SW),
@@ -143,13 +145,31 @@ module finallab(
 		.vga_valid(VGA_BLANK_N),
 		.vga_data_r(VGA_R),
 		.vga_data_g(VGA_G),
-		.vga_data_b(VGA_B)
+		.vga_data_b(VGA_B),
+		.ps2_clk(PS2_CLK),
+		.ps2_data(PS2_DAT)
 	);
 
 
 //=======================================================
 //  Structural coding
 //=======================================================
+
+	initial begin
+		signal_use_manual_clk <= 0;
+	end
+	
+	always @ (posedge KEY[1]) begin
+		signal_use_manual_clk <= ~signal_use_manual_clk;
+	end
+	
+	always @ (posedge CLOCK_50) begin
+		if (signal_use_manual_clk) begin
+			m_cpu_clk <= KEY[0];
+		end else begin
+			m_cpu_clk <= CPU_CLK;
+		end
+	end
 
 
 

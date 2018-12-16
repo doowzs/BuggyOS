@@ -1,20 +1,21 @@
 module vga(
-	input					vga_clk,
-	input 				sys_clk,
-	input					rst,
-	input		[31:0]	vga_ascii,
-	output  	[31:0] 	vga_addr, // 0 ~ 2099
-	output				hsync,
-	output				vsync,
-	output				valid,
-	output	[7:0]		vga_r,
-	output	[7:0]		vga_g,
-	output	[7:0]		vga_b
+	input							vga_clk,
+	input 						sys_clk,
+	input							rst,
+	input             		vga_refresh_wren,
+	input				[31:0]	vga_refresh_data,
+	output  wire 	[31:0] 	vga_refresh_addr,
+	output						hsync,
+	output						vsync,
+	output						valid,
+	output	    	[7:0]		vga_r,
+	output	    	[7:0]		vga_g,
+	output	    	[7:0]		vga_b
 );
 
 	parameter h_frontporch = 96;
-	parameter h_active = 144;
-	parameter h_backporch = 774; // last 10 is not used
+	parameter h_active = 143;
+	parameter h_backporch = 773; // last 10 is not used
 	parameter h_total = 800;
 	
 	parameter v_frontporch = 2;
@@ -22,9 +23,23 @@ module vga(
 	parameter v_backporch = 515;
 	parameter v_total = 525;
 	
-	wire [31:0] font_addr;
+	wire  [7:0] ascii_data;
+	wire [11:0] vga_addr;
+	wire [11:0] font_addr;
 	wire [11:0] font_data;
-	assign font_addr = {vga_ascii[7:0], 4'b0000} + dy;
+	assign font_addr = {ascii_data[7:0], 4'b0000} + dy;
+	assign vga_refresh_addr = {{18{1'b0}}, vga_addr[11:0], {2{1'b0}}}; // addr * 4
+	
+	// A port is internal, always reading data;
+	// B port is external, will refresh if there is no input from keyboard.
+	vga_ram addr2ascii (
+		.clock(sys_clk),
+		.data(vga_refresh_data[7:0]),
+		.rdaddress(vga_addr),
+		.wraddress(vga_addr),
+		.wren(vga_refresh_wren),
+		.q(ascii_data)
+	);
 	
 	vga_font ascii2data (
 		.address(font_addr),
@@ -115,9 +130,9 @@ module vga(
 	assign v_valid = (y_cnt > v_active) & (y_cnt <= v_backporch);
 	assign valid = h_valid & v_valid;
 
-	assign vga_addr = valid ? {({by[5:0], 6'h0} + {by[9:0], 2'b00} + {1'b0, by[9:0], 1'b0} + {2'b00, bx}), 2'b00} : 32'h0;
+	assign vga_addr = valid ? ({by[5:0], 6'h0} + {by[9:0], 2'b00} + {1'b0, by[9:0], 1'b0} + {2'b00, bx}) : 12'h0;
 
-	assign vga_r = font_data[dx] == 1 ? 8'hff : 8'h00;
-	assign vga_g = font_data[dx] == 1 ? 8'hff : 8'h00;
-	assign vga_b = font_data[dx] == 1 ? 8'hff : 8'h00;
+	assign vga_r = font_data[dx - 1] == 1 ? 8'hff : 8'h00;
+	assign vga_g = font_data[dx - 1] == 1 ? 8'hff : 8'h00;
+	assign vga_b = font_data[dx - 1] == 1 ? 8'hff : 8'h00;
 endmodule 

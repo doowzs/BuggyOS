@@ -28,10 +28,20 @@ module io(
 	output        vga_valid,
 	output  [7:0] vga_data_r,
 	output  [7:0] vga_data_g,
-	output  [7:0] vga_data_b
+	output  [7:0] vga_data_b,
+	input         ps2_clk,
+	input         ps2_data
 );
 
+	parameter key_addr = 32'h000020D0;
+	
+	reg  [31:0] vk_wdata_last;
+	
+	wire [31:0] vga_addr; // this is external address of CPU's memory
+
 	assign led_out = led_in;
+	assign vk_wren = (vk_wdata_last != 0 || vk_wdata != 0);
+	assign vk_addr = (vk_wren) ? key_addr : vga_addr;
 
 	segment mSEG(
 		.src0(seg_in0),
@@ -52,8 +62,9 @@ module io(
 		.vga_clk(vga_clk),
 		.sys_clk(sys_clk),
 		.rst(rst),
-		.vga_ascii(vk_rdata),
-		.vga_addr(vk_addr),
+		.vga_refresh_wren(~vk_wren), // if there is input, do not refresh
+		.vga_refresh_data(vk_rdata),
+		.vga_refresh_addr(vga_addr),
 		.hsync(vga_hsync),
 		.vsync(vga_vsync),
 		.valid(vga_valid),
@@ -61,5 +72,21 @@ module io(
 		.vga_g(vga_data_g),
 		.vga_b(vga_data_b)
 	);
+	
+	key mKEY(
+		.ps2_clk(ps2_clk),
+		.sys_clk(sys_clk),
+		.rst(rst),
+		.ps2_data(ps2_data),
+		.ps2_ascii(vk_wdata)
+	);
+	
+	initial begin
+		vk_wdata_last <= 0;
+	end
+	
+	always @ (posedge sys_clk) begin
+		vk_wdata_last <= vk_wdata;
+	end
 	
 endmodule 

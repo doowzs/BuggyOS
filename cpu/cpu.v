@@ -16,7 +16,8 @@ module cpu(
 );
 
   // Program counter and instruction
-  wire [31:0] pc2addr;
+  wire [31:0] pc_vaddr;
+  wire [31:0] pc_paddr;
   wire [31:0] seq_pc;
   wire [31:0] instr;
   wire [31:0] instr_sign_ex;
@@ -64,7 +65,7 @@ module cpu(
   };
   always @ (*) begin
     if (SW == 0) begin
-	    SEG = pc2addr[23:0];
+	    SEG = pc_vaddr[23:0];
     end else begin
 	    if (SW[9]) begin
 		    DEBUG_SEG_32 = reg_rdata0;
@@ -85,7 +86,7 @@ module cpu(
  	    end else begin
 	      DEBUG_SEG = DEBUG_SEG_32[15:0];
 	    end
-      SEG = {DEBUG_SEG, pc2addr[7:0]};
+      SEG = {DEBUG_SEG, pc_vaddr[7:0]};
 	  end
   end
 
@@ -99,13 +100,14 @@ module cpu(
     .jmp_addr(instr[25:0]),
     .branch_offset(instr[15:0]),
     .reg_addr(reg_rdata0),
-    .pc(pc2addr),
+    .pc(pc_vaddr),
 	 .seq_pc(seq_pc)
   );
 
   // Instruction starts from 0x400000 to fit MARS.
+  assign pc_paddr = pc_vaddr - 32'h400000;
   instr_memory mINSTRMEM(
-    .addr(pc2addr - 32'h400000),
+    .addr(pc_paddr),
     .instr(instr)
   );
 
@@ -192,8 +194,8 @@ module cpu(
   // B port is used for I/O.
   assign mem_paddr = alu_dest - 32'h10000000;
   data_memory mMEM(
-    .address_a(mem_paddr),
-	 .address_b(io_addr),
+    .address_a({2'b00, mem_paddr[31:2]}),
+	 .address_b({2'b00, io_addr[31:2]}),
 	 .clock_a(sys_clk),
 	 .clock_b(sys_clk),
 	 .data_a(reg_rdata1),    // Save Rt register
