@@ -102,6 +102,7 @@ _write_newline:
 jal _newline
 j _write_ret
 _write_prompt:
+jal _newline
 jal handle
 _write_ret:
 addi $sp, $sp, 0x4
