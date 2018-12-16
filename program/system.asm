@@ -82,6 +82,13 @@ jal strcmp
 addi $sp, $sp, 0x4
 lw $a0, ($sp)
 bne $v0, $zero, _cmd_02_meme
+addi $a1, $zero, 0x100029C0
+sw $a0, ($sp) 
+subi $sp, $sp, 0x4
+jal strcmp
+addi $sp, $sp, 0x4
+lw $a0, ($sp)
+bne $v0, $zero, _cmd_restart
 j _cmd_fail
 ##### cmd handlers #####
 _cmd_01_hello:
@@ -92,6 +99,8 @@ _cmd_02_meme:
 addi $a0, $zero, 0x10006000
 jal print
 j _handler_ret
+_cmd_restart:
+j _init
 _cmd_fail:
 addi $a0, $zero, 0x10002900
 jal print
@@ -149,10 +158,12 @@ _write_newline:
 jal _newline
 j _write_ret
 _write_prompt:
-add $t0, $zero, $k1
-subi $t0, $k1, 0x110 # avoid "# " prompt
+subi $a0, $k1, 0x110 # avoid "# " prompt
+sw $a0, ($sp)
+subi $sp, $sp, 0x4
 jal _newline
-add $a0, $zero, $t0
+addi $sp, $sp, 0x4
+lw $a0, ($sp)
 jal handle
 _write_ret:
 addi $sp, $sp, 0x4
