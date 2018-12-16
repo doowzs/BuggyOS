@@ -107,8 +107,9 @@ module cpu(
   // Instruction starts from 0x400000 to fit MARS.
   assign pc_paddr = pc_vaddr - 32'h400000;
   instr_memory mINSTRMEM(
-    .addr(pc_paddr),
-    .instr(instr)
+    .address({2'b00, pc_paddr[31:2]}),
+    .clock(sys_clk),
+    .q(instr)
   );
 
   sign_ex mSIEX(

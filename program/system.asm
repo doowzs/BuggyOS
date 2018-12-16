@@ -10,32 +10,34 @@ addi $s3, $zero, 0x100020D4 # last key
 addi $a0, $zero, 0x10000000
 addi $a1, $zero, 0x100020D0
 jal _clear
-# print hello message
-addi $a0, $zero, 0x10002100
-jal print
 j main
 
 main:
 _read:
 xor $t8, $t8, $t8
 addi $t9, $zero, 0x20000
+# print hello message
+addi $a0, $zero, 0x10002100
+jal print
+jal _prompt
 _read_loop:
-lw $a0, ($s2) # read this key
-lw $t0, ($s3) # load last key
-sw $a0, ($s3) # save this key
+lw $t0, ($s2) # read this key
+lw $t1, ($s3) # load last key
+sw $t0, ($s3) # save this key
 addi $t8, $t8, 1
 bne $t8, $t9, _read_judge
 xor $t8, $t8, $t8
 jal _cursor
 j _read_loop
 _read_judge:
-beq $a0, $zero, _read_loop  # key == 0
-beq $a0, $t0, _read_loop    # key == last
-_read_write:
+beq $t0, $zero, _read_loop  # key == 0
+beq $t0, $t1,   _read_loop  # key == last
 # if =0x8, goto backspace
 # otherwise, print the character
-add $t0, $zero, 0x8
-beq $a0, $t0, _read_backspace
+add $t3, $zero, 0x8
+beq $t0, $t3, _read_backspace
+_read_write:
+add $a0, $zero, $t0
 jal _write
 j _read_end
 _read_backspace:
@@ -54,8 +56,6 @@ jal _write
 addi $t0, $t0, 4
 j print_loop
 print_ret:
-jal _newline
-jal _prompt
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
 jr $ra
@@ -63,9 +63,10 @@ jr $ra
 handle:
 sw $ra, ($sp)
 subi $sp, $sp, 0x4
-addi $a0, $zero, 0x10002800
+addi $a0, $zero, 0x10006000
 jal print
 _handle_ret:
+jal _prompt
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
 jr $ra
@@ -87,7 +88,7 @@ _write:
 sw $ra, ($sp)
 subi $sp, $sp, 0x4
 sw $zero, ($k0) # clear cursor
-beq $a0, $s0, _write_prompt
+beq $a0, $s0, _write_handle
 beq $a0, $s1, _write_newline
 sw $a0, ($k0)
 addi $k0, $k0, 0x4
@@ -96,9 +97,9 @@ j _write_ret
 _write_newline:
 jal _newline
 j _write_ret
-_write_prompt:
+_write_handle:
+addi $a0, $k0, 0x8
 jal handle
-jal _prompt
 _write_ret:
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
@@ -126,7 +127,7 @@ jal _newline
 addi $a0, $zero, 0x23
 jal _write
 # print " "
-xor $a0, $a0, $a0
+addi $a0, $zero, 0x20
 jal _write
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
