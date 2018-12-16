@@ -19,6 +19,7 @@ main:
 _read:
 xor $t8, $t8, $t8
 addi $t9, $zero, 0x20000
+jal _prompt
 _read_loop:
 lw $a0, ($s2) # read this key
 lw $t0, ($s3) # load last key
@@ -31,11 +32,11 @@ j _read_loop
 _read_judge:
 beq $a0, $zero, _read_loop  # key == 0
 beq $a0, $t0, _read_loop    # key == last
-_read_write:
 # if =0x8, goto backspace
 # otherwise, print the character
-add $t0, $zero, 0x8
+addi $t0, $zero, 0x8
 beq $a0, $t0, _read_backspace
+_read_write:
 jal _write
 j _read_end
 _read_backspace:
@@ -50,12 +51,15 @@ add $t0, $zero, $a0
 print_loop:
 lw $a0, ($t0)
 beq $a0, $zero, print_ret
+sw $t0, ($sp)
+subi $sp, $sp, 0x4
 jal _write
-addi $t0, $t0, 4
+addi $sp, $sp, 0x4
+lw $t0, ($sp)
+addi $t0, $t0, 0x4
 j print_loop
 print_ret:
 jal _newline
-jal _prompt
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
 jr $ra
@@ -63,8 +67,9 @@ jr $ra
 handle:
 sw $ra, ($sp)
 subi $sp, $sp, 0x4
-addi $a0, $zero, 0x10002800
+addi $a0, $zero, 0x10006000
 jal print
+jal _prompt
 _handle_ret:
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
@@ -98,7 +103,6 @@ jal _newline
 j _write_ret
 _write_prompt:
 jal handle
-jal _prompt
 _write_ret:
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
