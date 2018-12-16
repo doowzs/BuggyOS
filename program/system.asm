@@ -1,9 +1,10 @@
 _init:
 addi $k0, $zero, 0x10000000
 addi $k1, $zero, 0x10000118
-addi $sp, $zero, 0x1000fffc
-addi $s0, $zero, 0x0000000d # ENTER KEY
-addi $s1, $zero, 0x0000000a # NEW LINE
+addi $gp, $zero, 0x1000D000
+addi $sp, $zero, 0x1000FFFC
+addi $s0, $zero, 0x0000000D # ENTER KEY
+addi $s1, $zero, 0x0000000A # NEW LINE
 addi $s2, $zero, 0x100020D0 # frame end
 addi $s3, $zero, 0x100020D4 # last key
 # clear screen
@@ -37,6 +38,7 @@ beq $a0, $t0, _read_loop    # key == last
 addi $t0, $zero, 0x8
 beq $a0, $t0, _read_backspace
 _read_write:
+addi $a1, $zero, 0x1
 jal _write
 j _read_end
 _read_backspace:
@@ -53,6 +55,7 @@ lw $a0, ($t0)
 beq $a0, $zero, print_ret
 sw $t0, ($sp)
 subi $sp, $sp, 0x4
+xor $a1, $a1, $a1
 jal _write
 addi $sp, $sp, 0x4
 lw $t0, ($sp)
@@ -65,12 +68,80 @@ lw $ra, ($sp)
 jr $ra
 
 handle:
-sw $ra, ($sp)
+sw $ra, ($sp) 
 subi $sp, $sp, 0x4
+##### cmd analyzers #####
+addi $a1, $zero, 0x10002800
+sw $a0, ($sp) 
+subi $sp, $sp, 0x4
+jal strcmp
+addi $sp, $sp, 0x4
+lw $a0, ($sp)
+bne $v0, $zero, _cmd_01_hello
+addi $a1, $zero, 0x100029A0
+sw $a0, ($sp) 
+subi $sp, $sp, 0x4
+jal strcmp
+addi $sp, $sp, 0x4
+lw $a0, ($sp)
+bne $v0, $zero, _cmd_02_meme
+addi $a1, $zero, 0x100029C0
+sw $a0, ($sp) 
+subi $sp, $sp, 0x4
+jal strcmp
+addi $sp, $sp, 0x4
+lw $a0, ($sp)
+bne $v0, $zero, _cmd_restart
+addi $a1, $zero, 0x100029E0
+sw $a0, ($sp) 
+subi $sp, $sp, 0x4
+jal strcmp
+addi $sp, $sp, 0x4
+lw $a0, ($sp)
+bne $v0, $zero, _cmd_clear
+j _cmd_fail
+##### cmd handlers #####
+_cmd_01_hello:
+addi $a0, $zero, 0x10002820
+jal print
+j _handler_ret
+_cmd_02_meme:
 addi $a0, $zero, 0x10006000
 jal print
+j _handler_ret
+_cmd_restart:
+j _init
+_cmd_clear:
+addi $a0, $zero, 0x10000000
+addi $a1, $zero, 0x100020D0
+jal _clear
+j _handler_ret
+_cmd_fail:
+addi $a0, $zero, 0x10002900
+jal print
+_handler_ret:
 jal _prompt
-_handle_ret:
+addi $sp, $sp, 0x4
+lw $ra, ($sp)
+jr $ra
+
+strcmp:
+sw $ra, ($sp) 
+subi $sp, $sp, 0x4
+add $t0, $zero, $a0
+add $t1, $zero, $a1
+addi $v0, $zero, 1 # default: return 1
+_cmp_loop:
+lw $a0, ($t0)
+lw $a1, ($t1)
+addi $t0, $t0, 0x4
+addi $t1, $t1, 0x4
+bne $a0, $a1, _cmp_false
+beq $a0, $zero, _cmp_fin
+j _cmp_loop
+_cmp_false:
+xor $v0, $v0, $v0 # failed compare
+_cmp_fin:
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
 jr $ra
@@ -80,7 +151,7 @@ lw $t0, ($k0)
 beq $t0, $zero, _cursor_0
 j _cursor_1
 _cursor_0:
-addi $t0, $zero, 0x5f # print "_"
+addi $t0, $zero, 0x5F # print "_"
 j _cursor_write
 _cursor_1:
 xor $t0, $t0, $t0     # print " "
@@ -92,8 +163,12 @@ _write:
 sw $ra, ($sp)
 subi $sp, $sp, 0x4
 sw $zero, ($k0) # clear cursor
-beq $a0, $s0, _write_prompt
+beq $a0, $s0, _write_handle
 beq $a0, $s1, _write_newline
+beq $a1, $zero, _write_skip_input
+sw $a0, ($gp)
+addi $gp, $gp, 0x4
+_write_skip_input:
 sw $a0, ($k0)
 addi $k0, $k0, 0x4
 beq $k0, $k1, _write_newline
@@ -101,8 +176,12 @@ j _write_ret
 _write_newline:
 jal _newline
 j _write_ret
-_write_prompt:
+_write_handle:
+sw $zero, ($gp)
 jal _newline
+addi $a0, $zero, 0x1000D000
+jal print
+addi $a0, $zero, 0x1000D000
 jal handle
 _write_ret:
 addi $sp, $sp, 0x4
@@ -117,6 +196,8 @@ beq $k0, $k1, _backspace_ret
 sw $zero, ($k0) # clear cursor
 subi $k0, $k0, 0x4
 sw $zero, ($k0)
+subi $gp, $gp, 0x4
+sw $zero, ($gp)
 _backspace_ret:
 addi $k1, $k1, 0x110
 addi $sp, $sp, 0x4
@@ -129,10 +210,13 @@ subi $sp, $sp, 0x4
 jal _newline
 # print "#"
 addi $a0, $zero, 0x23
+xor $a1, $a1, $a1
 jal _write
 # print " "
-xor $a0, $a0, $a0
+addi $a0, $zero, 0x20
+xor $a1, $a1, $a1
 jal _write
+addi $gp, $zero, 0x1000D000 # reset string pointer here
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
 jr $ra
