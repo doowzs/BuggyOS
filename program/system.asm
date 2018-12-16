@@ -28,8 +28,12 @@ _read_write:
 # if =0x8, goto backspace
 # otherwise, print the character
 add $t0, $zero, 0x8
-beq $a0, $t0, _backspace
+beq $a0, $t0, _read_backspace
 jal _write
+j _read_end
+_read_backspace:
+jal _backspace
+_read_end:
 j _read_loop
 
 print:
@@ -84,13 +88,13 @@ jr $ra
 _backspace:
 sw $ra, ($sp)
 subi $sp, $sp, 0x4
-subi $k1, $k1, 0x118
+subi $k1, $k1, 0x110 # prompt cannot be deleted
 beq $k0, $k1, _backspace_ret
 sw $zero, ($k0) # clear cursor
 subi $k0, $k0, 0x4
 sw $zero, ($k0)
 _backspace_ret:
-addi $k1, $k1, 0x118
+addi $k1, $k1, 0x110
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
 jr $ra
