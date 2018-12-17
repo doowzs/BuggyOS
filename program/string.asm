@@ -4,7 +4,7 @@ addi $a0, $zero, 0x10010000
 addi $a1, $zero, 0x10010100
 addi $a2, $zero, 0x3
 #string constants are preloaded
-jal strncmp
+jal scanhex
 j _test_fin
 
 
@@ -77,6 +77,67 @@ _cmpn_fin:
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
 jr $ra
+
+scanhex:
+#save return addr in stack
+sw $ra, ($sp) 
+subi $sp, $sp, 0x4
+xor $v0, $v0, $v0
+xor $t2, $t2, $t2
+addi $t2, $t2, 0x10
+#load param
+add $t0, $zero, $a0
+_scanhex_loop:
+lw $t1, ($t0)
+addi $t0, $t0, 0x4
+beq $t1, $zero, _scanhex_ret
+subi $t1, $t1, 0x30
+slt $t3, $t1, $t2
+bne $t3, $zero, _scanhex_add
+subi $t1, $t1, 0x27
+_scanhex_add:
+sll $v0, $v0, 0x4
+add $v0, $v0, $t1
+j _scanhex_loop
+_scanhex_ret:
+#recover return addr from stack
+addi $sp, $sp, 0x4
+lw $ra, ($sp)
+jr $ra
+
+
+
+
+
+
+
+
+
+#recover return addr from stack
+addi $sp, $sp, 0x4
+lw $ra, ($sp)
+jr $ra
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 _test_fin:
