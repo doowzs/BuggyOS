@@ -85,7 +85,7 @@ jal strcmp
 addi $sp, $sp, 0x4
 lw $a0, ($sp)
 bne $v0, $zero, _cmd_02_meme
-addi $a1, $zero, 0x100029A0 ### NOT READY!
+addi $a1, $zero, 0x100029F0
 sw $a0, ($sp) 
 subi $sp, $sp, 0x4
 addi $a2, $zero, 0x4
@@ -121,6 +121,8 @@ _cmd_03_fibo:
 addi $a0, $zero, 0x1000D000
 addi $a0, $a0, 0x14
 jal scanhex
+add $a0, $zero, $v0
+jal fibonacci
 add $a0, $zero, $v0
 jal printhex
 add $a0, $zero, $gp
@@ -208,6 +210,26 @@ sll $v0, $v0, 0x4
 add $v0, $v0, $t1
 j _scanhex_loop
 _scanhex_ret:
+addi $sp, $sp, 0x4
+lw $ra, ($sp)
+jr $ra
+
+fibonacci:
+sw $ra, ($sp) 
+subi $sp, $sp, 0x4
+add $t0, $zero, $a0
+addi $t1, $zero, 0x0
+addi $t2, $zero, 0x1
+xor $t3, $t3, $t3
+_fibo_loop:
+beq $t0, $zero, _fido_ret
+subi $t0, $t0, 0x1
+add $t3, $t2, $t1
+add $t1, $zero, $t2
+add $t2, $zero, $t3
+j _fibo_loop
+_fido_ret:
+add $v0, $zero, $t1
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
 jr $ra
