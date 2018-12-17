@@ -3,8 +3,8 @@ module instr_memory(
   output  [31:0] instr
 );
 
-  wire [7:0] paddr;
-  assign paddr = addr[9:2];
+  wire [9:0] paddr;
+  assign paddr = addr[11:2];
 
   // SIZE: 256 instructions.
   reg [31:0] instr_memory [1023:0];
