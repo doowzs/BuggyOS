@@ -85,6 +85,14 @@ jal strcmp
 addi $sp, $sp, 0x4
 lw $a0, ($sp)
 bne $v0, $zero, _cmd_02_meme
+addi $a1, $zero, 0x100029A0 ### NOT READY!
+sw $a0, ($sp) 
+subi $sp, $sp, 0x4
+addi $a2, $zero, 0x4
+jal strncmp
+addi $sp, $sp, 0x4
+lw $a0, ($sp)
+bne $v0, $zero, _cmd_03_fibo
 addi $a1, $zero, 0x100029C0
 sw $a0, ($sp) 
 subi $sp, $sp, 0x4
@@ -107,6 +115,15 @@ jal print
 j _handler_ret
 _cmd_02_meme:
 addi $a0, $zero, 0x10006000
+jal print
+j _handler_ret
+_cmd_03_fibo:
+addi $a0, $zero, 0x1000D0000
+addi $a0, $a0, 0x14
+jal scanhex
+add $a0, $zero, $v0
+jal printhex
+add $a0, $zero, $gp
 jal print
 j _handler_ret
 _cmd_restart:
@@ -142,6 +159,79 @@ j _cmp_loop
 _cmp_false:
 xor $v0, $v0, $v0 # failed compare
 _cmp_fin:
+addi $sp, $sp, 0x4
+lw $ra, ($sp)
+jr $ra
+
+strncmp:
+sw $ra, ($sp) 
+subi $sp, $sp, 0x4
+add $t0, $zero, $a0
+add $t1, $zero, $a1
+add $t2, $zero, $a2
+addi $v0, $zero, 1
+_cmpn_loop:
+lw $a0, ($t0)
+lw $a1, ($t1)
+addi $t0, $t0, 0x4
+addi $t1, $t1, 0x4
+subi $t2, $t2, 1
+bne $a0, $a1, _cmpn_false
+beq $a0, $zero, _cmpn_fin
+beq $t2, $zero, _cmpn_fin
+j _cmpn_loop
+_cmpn_false:
+xor $v0, $v0, $v0
+_cmpn_fin:
+addi $sp, $sp, 0x4
+lw $ra, ($sp)
+jr $ra
+
+
+scanhex:
+sw $ra, ($sp) 
+subi $sp, $sp, 0x4
+xor $v0, $v0, $v0
+xor $t2, $t2, $t2
+addi $t2, $t2, 0x10
+add $t0, $zero, $a0
+_scanhex_loop:
+lw $t1, ($t0)
+addi $t0, $t0, 0x4
+beq $t1, $zero, _scanhex_ret
+subi $t1, $t1, 0x30
+slt $t3, $t1, $t2
+bne $t3, $zero, _scanhex_add
+subi $t1, $t1, 0x27
+_scanhex_add:
+sll $v0, $v0, 0x4
+add $v0, $v0, $t1
+j _scanhex_loop
+_scanhex_ret:
+addi $sp, $sp, 0x4
+lw $ra, ($sp)
+jr $ra
+
+printhex:
+sw $ra, ($sp) 
+subi $sp, $sp, 0x4
+addi $gp, $zero, 0x1000D020 #end of print
+add $t0, $zero, $a0  #value to be printed
+addi $t1, $zero, 0xf #mask
+addi $t2, $zero, 0xa
+sw $zero, ($gp)
+_printhex_loop:
+subi $gp, $gp, 0x4
+and $t3, $t1, $t0
+srl $t0, $t0, 0x4
+slt $t4, $t3, $t2
+bne $t4, $zero, _printhex_char
+addi $t3, $t3, 0x27
+_printhex_char:
+addi $t3, $t3, 0x30
+sw $t3, ($gp)
+addi $t4, $zero, 0x1000D000
+bne $gp, $t4, _printhex_loop
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
 jr $ra
