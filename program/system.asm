@@ -85,7 +85,7 @@ jal strcmp
 addi $sp, $sp, 0x4
 lw $a0, ($sp)
 bne $v0, $zero, _cmd_02_meme
-addi $a1, $zero, 0x100029F0
+addi $a1, $zero, 0x10002a00
 sw $a0, ($sp) 
 subi $sp, $sp, 0x4
 addi $a2, $zero, 0x4
