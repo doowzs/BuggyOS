@@ -385,7 +385,6 @@ set_global_assignment -name VERILOG_FILE cpu/decoder/decoder.v
 set_global_assignment -name VERILOG_FILE cpu/cpu.v
 set_global_assignment -name VERILOG_FILE io/segment/hex_display.v
 set_global_assignment -name VERILOG_FILE io/segment/segment.v
-set_global_assignment -name VERILOG_FILE io/vga/vga_control.v
 set_global_assignment -name QIP_FILE io/vga/vga_font.qip
 set_global_assignment -name QIP_FILE io/vga/vga_ram.qip
 set_global_assignment -name VERILOG_FILE io/vga/vga.v
