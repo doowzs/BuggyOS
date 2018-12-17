@@ -118,7 +118,7 @@ addi $a0, $zero, 0x10006000
 jal print
 j _handler_ret
 _cmd_03_fibo:
-addi $a0, $zero, 0x1000D0000
+addi $a0, $zero, 0x1000D000
 addi $a0, $a0, 0x14
 jal scanhex
 add $a0, $zero, $v0
