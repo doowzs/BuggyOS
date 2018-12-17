@@ -7,6 +7,7 @@ addi $s0, $zero, 0x0000000D # ENTER KEY
 addi $s1, $zero, 0x0000000A # NEW LINE
 addi $s2, $zero, 0x100020D0 # frame end
 addi $s3, $zero, 0x100020D4 # last key
+addi $s7, $zero, 0x00000000 # reset LED
 # clear screen
 addi $a0, $zero, 0x10000000
 addi $a1, $zero, 0x100020D0
@@ -93,6 +94,14 @@ jal strncmp
 addi $sp, $sp, 0x4
 lw $a0, ($sp)
 bne $v0, $zero, _cmd_03_fibo
+addi $a1, $zero, 0x10002A20
+sw $a0, ($sp) 
+subi $sp, $sp, 0x4
+addi $a2, $zero, 0x3
+jal strncmp
+addi $sp, $sp, 0x4
+lw $a0, ($sp)
+bne $v0, $zero, _cmd_04_led
 addi $a1, $zero, 0x100029C0
 sw $a0, ($sp) 
 subi $sp, $sp, 0x4
@@ -127,6 +136,12 @@ add $a0, $zero, $v0
 jal printhex
 add $a0, $zero, $gp
 jal print
+j _handler_ret
+_cmd_04_led:
+addi $a0, $zero, 0x1000D000
+addi $a0, $a0, 0x10
+jal scanhex
+add $s7, $zero, $v0
 j _handler_ret
 _cmd_restart:
 j _init
