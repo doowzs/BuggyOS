@@ -5,6 +5,8 @@ addi $a1, $zero, 0x10010100
 addi $a2, $zero, 0x3
 #string constants are preloaded
 jal scanhex
+add $a0, $zero, $v0
+jal printhex
 j _test_fin
 
 
@@ -107,11 +109,27 @@ jr $ra
 
 
 
-
-
-
-
-
+printhex:
+#save return addr in stack
+sw $ra, ($sp) 
+subi $sp, $sp, 0x4
+addi $gp, $zero, 0x1000D020 #end of print
+add $t0, $zero, $a0  #value to be printed
+addi $t1, $zero, 0xf #mask
+addi $t2, $zero, 0xa
+sw $zero, ($gp)
+_printhex_loop:
+subi $gp, $gp, 0x4
+and $t3, $t1, $t0
+srl $t0, $t0, 0x4
+slt $t4, $t3, $t2
+bne $t4, $zero, _printhex_char
+addi $t3, $t3, 0x27
+_printhex_char:
+addi $t3, $t3, 0x30
+sw $t3, ($gp)
+addi $t4, $zero, 0x1000D000
+bne $gp, $t4, _printhex_loop
 
 #recover return addr from stack
 addi $sp, $sp, 0x4
