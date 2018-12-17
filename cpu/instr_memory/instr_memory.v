@@ -10,7 +10,7 @@ module instr_memory(
   reg [31:0] instr_memory [1023:0];
   
   initial begin
-    $readmemh("program/system.mips", instr_memory);
+    $readmemh("program/led.mips", instr_memory);
   end
 
   assign instr = instr_memory[paddr];
