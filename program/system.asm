@@ -329,6 +329,7 @@ xor $t2, $t2, $t2
 addi $t2, $t2, 0x10
 add $t0, $zero, $a0
 lw $t1, ($t0)
+beq $t1, $zero, _scan1hex_ret
 subi $t1, $t1, 0x30
 slt $t3, $t1, $t2
 bne $t3, $zero, _scan1hex_ret
