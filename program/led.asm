@@ -18,7 +18,7 @@ jal strcmp
 addi $sp, $sp, 0x4
 lw $a0, ($sp)
 bne $v0, $zero, _ledctr_off
-addi $a1, $zero, 0x10002A30
+addi $a1, $zero, 0x10002A50
 sw $a0, ($sp) 
 subi $sp, $sp, 0x4
 jal strcmp
