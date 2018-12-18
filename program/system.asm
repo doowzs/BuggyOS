@@ -289,14 +289,22 @@ addi $a0, $a0, 0x18
 addi $a1, $zero, 0x10002A40
 sw $a0, ($sp) 
 subi $sp, $sp, 0x4
+sw $t1, ($sp) 
+subi $sp, $sp, 0x4
 jal strcmp
+addi $sp, $sp, 0x4
+lw $t1, ($sp)
 addi $sp, $sp, 0x4
 lw $a0, ($sp)
 bne $v0, $zero, _ledctr_off
 addi $a1, $zero, 0x10002A50
 sw $a0, ($sp) 
 subi $sp, $sp, 0x4
+sw $t1, ($sp) 
+subi $sp, $sp, 0x4
 jal strcmp
+addi $sp, $sp, 0x4
+lw $t1, ($sp)
 addi $sp, $sp, 0x4
 lw $a0, ($sp)
 bne $v0, $zero, _ledctr_on
