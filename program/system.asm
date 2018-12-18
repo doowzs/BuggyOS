@@ -89,7 +89,7 @@ bne $v0, $zero, _cmd_02_meme
 addi $a1, $zero, 0x10002A00
 sw $a0, ($sp) 
 subi $sp, $sp, 0x4
-addi $a2, $zero, 0x4
+addi $a2, $zero, 0x5
 jal strncmp
 addi $sp, $sp, 0x4
 lw $a0, ($sp)
@@ -97,7 +97,7 @@ bne $v0, $zero, _cmd_03_fibo
 addi $a1, $zero, 0x10002A20
 sw $a0, ($sp) 
 subi $sp, $sp, 0x4
-addi $a2, $zero, 0x3
+addi $a2, $zero, 0x4
 jal strncmp
 addi $sp, $sp, 0x4
 lw $a0, ($sp)
@@ -140,7 +140,7 @@ j _handler_ret
 _cmd_04_led:
 addi $a0, $zero, 0x1000D000
 addi $a0, $a0, 0x10
-jal scanhex
+jal scan1hex
 add $a0, $zero, $v0
 jal ledctr
 j _handler_ret
@@ -309,6 +309,24 @@ j _ledctr_ret
 _ledctr_on:
 or $s7, $s7, $t1
 _ledctr_ret:
+addi $sp, $sp, 0x4
+lw $ra, ($sp)
+jr $ra
+
+scan1hex:
+sw $ra, ($sp) 
+subi $sp, $sp, 0x4
+xor $v0, $v0, $v0
+xor $t2, $t2, $t2
+addi $t2, $t2, 0x10
+add $t0, $zero, $a0
+lw $t1, ($t0)
+subi $t1, $t1, 0x30
+slt $t3, $t1, $t2
+bne $t3, $zero, _scan1hex_ret
+subi $t1, $t1, 0x27
+_scan1hex_ret:
+add $v0, $v0, $t1
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
 jr $ra
