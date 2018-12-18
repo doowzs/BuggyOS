@@ -4,7 +4,7 @@ addi $a0, $zero, 0x10010000
 addi $a1, $zero, 0x10010100
 addi $a2, $zero, 0x3
 #string constants are preloaded
-jal scanhex
+jal scan1hex
 add $a0, $zero, $v0
 jal printhex
 j _test_fin
@@ -138,7 +138,25 @@ jr $ra
 
 
 
-
+scan1hex:
+#save return addr in stack
+sw $ra, ($sp) 
+subi $sp, $sp, 0x4
+xor $v0, $v0, $v0
+xor $t2, $t2, $t2
+addi $t2, $t2, 0x10
+#load param
+add $t0, $zero, $a0
+lw $t1, ($t0)
+subi $t1, $t1, 0x30
+slt $t3, $t1, $t2
+bne $t3, $zero, _scan1hex_ret
+subi $t1, $t1, 0x27
+_scan1hex_ret:
+add $v0, $v0, $t1
+addi $sp, $sp, 0x4
+lw $ra, ($sp)
+jr $ra
 
 
 
