@@ -14,8 +14,8 @@ module vga(
 );
 
 	parameter h_frontporch = 96;
-	parameter h_active = 143;
-	parameter h_backporch = 773; // last 10 is not used
+	parameter h_active = 145;
+	parameter h_backporch = 775; // last 10 is not used
 	parameter h_total = 800;
 	
 	parameter v_frontporch = 2;
