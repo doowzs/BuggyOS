@@ -150,6 +150,8 @@ _cmd_clear:
 addi $a0, $zero, 0x10000000
 addi $a1, $zero, 0x100020D0
 jal _clear
+addi $k0, $zero, 0x10000000
+addi $k1, $zero, 0x10000118
 j _handler_ret
 _cmd_fail:
 addi $a0, $zero, 0x10002900
