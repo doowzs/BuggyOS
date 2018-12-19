@@ -16,6 +16,8 @@ jal _clear
 # print hello message
 addi $a0, $zero, 0x10002100
 jal print
+addi $a0, $zero, 0x10003000
+jal print
 j main
 
 main:
@@ -111,6 +113,13 @@ jal strncmp
 addi $sp, $sp, 0x4
 lw $a0, ($sp)
 bne $v0, $zero, _cmd_05_color
+addi $a1, $zero, 0x10002A80
+sw $a0, ($sp) 
+subi $sp, $sp, 0x4
+jal strcmp
+addi $sp, $sp, 0x4
+lw $a0, ($sp)
+bne $v0, $zero, _cmd_help
 addi $a1, $zero, 0x100029C0
 sw $a0, ($sp) 
 subi $sp, $sp, 0x4
@@ -158,8 +167,11 @@ addi $a0, $zero, 0x1000D000
 addi $a0, $a0, 0x14
 jal scanhex
 add $s6, $zero, $v0
-srl $s6, $s6, 8
-sll $s6, $s6, 8
+sll $s6, $s6, 8 # 24-bit of RGB data
+j _handler_ret
+_cmd_help:
+addi $a0, $zero, 0x10003000
+jal print
 j _handler_ret
 _cmd_restart:
 j _init
