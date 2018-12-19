@@ -12,6 +12,7 @@ module register_file(
   input   [31:0]  jal_data,
   input   [4:0]   DEBUG_ADDR,
   output  [31:0]  DEBUG_OUT,
+  output  [31:0]  IO_RGBA_OUT,
   output  [31:0]  LEDR_OUT
 );
 
@@ -20,7 +21,8 @@ module register_file(
   assign rdata0 = reg_file[raddr0];
   assign rdata1 = reg_file[raddr1];
   assign DEBUG_OUT = reg_file[DEBUG_ADDR];
-  assign LEDR_OUT = reg_file[23];
+  assign IO_RGBA_OUT = reg_file[22]; // $s6
+  assign LEDR_OUT = reg_file[23];    // $s7
 
   integer i;
   initial begin

@@ -86,6 +86,7 @@ module finallab(
 	wire        wire_io_wren;
 	wire [31:0] wire_io_wdata;
 	wire [31:0] wire_io_rdata;
+	wire [31:0] wire_io_rgba;
 	
 	wire rst = (~KEY[3]) & (~KEY[0]);
 	wire CPU_CLK;
@@ -110,6 +111,7 @@ module finallab(
 		.io_wren(wire_io_wren),
 		.io_wdata(wire_io_wdata),
 		.io_rdata(wire_io_rdata),
+		.io_rgba(wire_io_rgba),
 		.LEDR(wire_ledr),
 		.SEG({
 			wire_seg5[3:0], wire_seg4[3:0],
@@ -139,6 +141,7 @@ module finallab(
 		.vk_wren(wire_io_wren),
 		.vk_wdata(wire_io_wdata),
 		.vk_rdata(wire_io_rdata),
+		.vk_rgba(wire_io_rgba),
 		.vga_clk(VGA_CLK),
 		.vga_hsync(VGA_HS),
 		.vga_vsync(VGA_VS),
