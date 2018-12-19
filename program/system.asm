@@ -7,6 +7,7 @@ addi $s0, $zero, 0x0000000D # ENTER KEY
 addi $s1, $zero, 0x0000000A # NEW LINE
 addi $s2, $zero, 0x100020D0 # frame end
 addi $s3, $zero, 0x100020D4 # last key
+addi $s7, $zero, 0x00000000 # reset LED
 # clear screen
 addi $a0, $zero, 0x10000000
 addi $a1, $zero, 0x100020D0
@@ -88,11 +89,19 @@ bne $v0, $zero, _cmd_02_meme
 addi $a1, $zero, 0x10002A00
 sw $a0, ($sp) 
 subi $sp, $sp, 0x4
-addi $a2, $zero, 0x4
+addi $a2, $zero, 0x5
 jal strncmp
 addi $sp, $sp, 0x4
 lw $a0, ($sp)
 bne $v0, $zero, _cmd_03_fibo
+addi $a1, $zero, 0x10002A20
+sw $a0, ($sp) 
+subi $sp, $sp, 0x4
+addi $a2, $zero, 0x4
+jal strncmp
+addi $sp, $sp, 0x4
+lw $a0, ($sp)
+bne $v0, $zero, _cmd_04_led
 addi $a1, $zero, 0x100029C0
 sw $a0, ($sp) 
 subi $sp, $sp, 0x4
@@ -127,6 +136,13 @@ add $a0, $zero, $v0
 jal printhex
 add $a0, $zero, $gp
 jal print
+j _handler_ret
+_cmd_04_led:
+addi $a0, $zero, 0x1000D000
+addi $a0, $a0, 0x10
+jal scan1hex
+add $a0, $zero, $v0
+jal ledctr
 j _handler_ret
 _cmd_restart:
 j _init
@@ -188,7 +204,6 @@ _cmpn_fin:
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
 jr $ra
-
 
 scanhex:
 sw $ra, ($sp) 
@@ -254,6 +269,73 @@ addi $t3, $t3, 0x30
 sw $t3, ($gp)
 addi $t4, $zero, 0x1000D000
 bne $gp, $t4, _printhex_loop
+addi $sp, $sp, 0x4
+lw $ra, ($sp)
+jr $ra
+
+ledctr:
+sw $ra, ($sp) 
+subi $sp, $sp, 0x4
+add $t0, $zero, $a0
+addi $t1, $zero, 0x1
+_ledctr_loop:
+beq $t0, $zero, _ledctr_handle
+sll $t1, $t1, 0x1
+subi $t0, $t0, 0x1
+j _ledctr_loop
+_ledctr_handle:
+addi $a0, $zero, 0x1000D000
+addi $a0, $a0, 0x18
+addi $a1, $zero, 0x10002A40
+sw $a0, ($sp) 
+subi $sp, $sp, 0x4
+sw $t1, ($sp) 
+subi $sp, $sp, 0x4
+jal strcmp
+addi $sp, $sp, 0x4
+lw $t1, ($sp)
+addi $sp, $sp, 0x4
+lw $a0, ($sp)
+bne $v0, $zero, _ledctr_off
+addi $a1, $zero, 0x10002A50
+sw $a0, ($sp) 
+subi $sp, $sp, 0x4
+sw $t1, ($sp) 
+subi $sp, $sp, 0x4
+jal strcmp
+addi $sp, $sp, 0x4
+lw $t1, ($sp)
+addi $sp, $sp, 0x4
+lw $a0, ($sp)
+bne $v0, $zero, _ledctr_on
+xor $s7, $s7, $t1# default
+j _ledctr_ret
+_ledctr_off:
+nor $t1, $t1, $t1
+and $s7, $s7, $t1
+j _ledctr_ret
+_ledctr_on:
+or $s7, $s7, $t1
+_ledctr_ret:
+addi $sp, $sp, 0x4
+lw $ra, ($sp)
+jr $ra
+
+scan1hex:
+sw $ra, ($sp) 
+subi $sp, $sp, 0x4
+xor $v0, $v0, $v0
+xor $t2, $t2, $t2
+addi $t2, $t2, 0x10
+add $t0, $zero, $a0
+lw $t1, ($t0)
+beq $t1, $zero, _scan1hex_ret
+subi $t1, $t1, 0x30
+slt $t3, $t1, $t2
+bne $t3, $zero, _scan1hex_ret
+subi $t1, $t1, 0x27
+_scan1hex_ret:
+add $v0, $v0, $t1
 addi $sp, $sp, 0x4
 lw $ra, ($sp)
 jr $ra

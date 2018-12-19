@@ -40,7 +40,8 @@ module cpu(
   wire [31:0] reg_rdata0;
   wire [31:0] reg_rdata1;
   wire [31:0] reg_wdata;
-  
+  wire [31:0] reg_ledctr;
+
   // ALU
   wire [31:0] alu_src;
   wire [31:0] alu_dest;
@@ -58,7 +59,8 @@ module cpu(
   reg [15:0] DEBUG_SEG;
   reg [31:0] DEBUG_SEG_32;
   wire [31:0] REG_DEBUG_OUT;
-  assign LEDR = {
+  assign LEDR = KEY[2] ? reg_ledctr[9:0] : 
+  {
     signal_mem_wren, signal_reg_wren,
 	  signal_reg_dmux_sel, signal_reg_rmux_sel,
 	  signal_alu_imux_sel, signal_alu_op[3:0], (signal_pc_control != 0)
@@ -174,7 +176,8 @@ module cpu(
 	 .jal_wren(signal_jal_wren),
 	 .jal_data(seq_pc),
     .DEBUG_ADDR(SW[4:0]),
-    .DEBUG_OUT(REG_DEBUG_OUT)
+    .DEBUG_OUT(REG_DEBUG_OUT),
+    .LEDR_OUT(reg_ledctr)
   );
   
   // ALU module
