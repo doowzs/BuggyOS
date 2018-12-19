@@ -14,8 +14,8 @@ module vga(
 );
 
 	parameter h_frontporch = 96;
-	parameter h_active = 145;
-	parameter h_backporch = 775; // last 10 is not used
+	parameter h_active = 144;
+	parameter h_backporch = 774; // last 10 is not used
 	parameter h_total = 800;
 	
 	parameter v_frontporch = 2;
@@ -59,7 +59,7 @@ module vga(
 	initial begin
 		x_cnt <= 1;
 		y_cnt <= 1;
-		dx <= 8;
+		dx <= 0;
 		dy <= 0;
 		bx <= 0;
 		by <= 0;
@@ -69,7 +69,7 @@ module vga(
 	always @ (posedge vga_clk or posedge rst) begin
 		if (rst) begin
 			x_cnt <= 1;
-			dx <= 8;
+			dx <= 0;
 			bx <= 0;
 		end else begin
 			if (x_cnt == h_total) begin
@@ -130,7 +130,7 @@ module vga(
 	assign v_valid = (y_cnt > v_active) & (y_cnt <= v_backporch);
 	assign valid = h_valid & v_valid;
 
-	assign vga_addr = valid ? ({by[5:0], 6'h0} + {by[9:0], 2'b00} + {1'b0, by[9:0], 1'b0} + {2'b00, bx}) : 12'h0;
+	assign vga_addr = {by[5:0], 6'h0} + {by[9:0], 2'b00} + {1'b0, by[9:0], 1'b0} + {2'b00, bx};
 
 	assign vga_r = font_data[dx - 1] == 1 ? 8'hff : 8'h00;
 	assign vga_g = font_data[dx - 1] == 1 ? 8'hff : 8'h00;
