@@ -10,6 +10,7 @@ module cpu(
   input         io_wren,
   input  [31:0] io_wdata,
   output [31:0] io_rdata,
+  output [31:0] io_rgba,
   // LEDR and 7-SEG
   output [9:0] LEDR,
   output reg [23:0] SEG
@@ -177,6 +178,7 @@ module cpu(
 	 .jal_data(seq_pc),
     .DEBUG_ADDR(SW[4:0]),
     .DEBUG_OUT(REG_DEBUG_OUT),
+	 .IO_RGBA_OUT(io_rgba),
     .LEDR_OUT(reg_ledctr)
   );
   

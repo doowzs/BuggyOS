@@ -22,6 +22,7 @@ module io(
 	output        vk_wren,
 	output [31:0] vk_wdata,
 	input  [31:0] vk_rdata,
+	input  [31:0] vk_rgba,
 	input         vga_clk,
 	output        vga_hsync,
 	output        vga_vsync,
@@ -68,6 +69,7 @@ module io(
 		.hsync(vga_hsync),
 		.vsync(vga_vsync),
 		.valid(vga_valid),
+		.vga_rgba(vk_rgba),
 		.vga_r(vga_data_r),
 		.vga_g(vga_data_g),
 		.vga_b(vga_data_b)

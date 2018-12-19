@@ -7,6 +7,7 @@ addi $s0, $zero, 0x0000000D # ENTER KEY
 addi $s1, $zero, 0x0000000A # NEW LINE
 addi $s2, $zero, 0x100020D0 # frame end
 addi $s3, $zero, 0x100020D4 # last key
+addi $s6, $zero, 0xFFFFFFFF # reset RGBA
 addi $s7, $zero, 0x00000000 # reset LED
 # clear screen
 addi $a0, $zero, 0x10000000
@@ -102,6 +103,14 @@ jal strncmp
 addi $sp, $sp, 0x4
 lw $a0, ($sp)
 bne $v0, $zero, _cmd_04_led
+addi $a1, $zero, 0x10002A60
+sw $a0, ($sp) 
+subi $sp, $sp, 0x4
+addi $a2, $zero, 0x5
+jal strncmp
+addi $sp, $sp, 0x4
+lw $a0, ($sp)
+bne $v0, $zero, _cmd_05_color
 addi $a1, $zero, 0x100029C0
 sw $a0, ($sp) 
 subi $sp, $sp, 0x4
@@ -143,6 +152,14 @@ addi $a0, $a0, 0x10
 jal scan1hex
 add $a0, $zero, $v0
 jal ledctr
+j _handler_ret
+_cmd_05_color:
+addi $a0, $zero, 0x1000D000
+addi $a0, $a0, 0x14
+jal scanhex
+add $s6, $zero, $v0
+srl $s6, $s6, 8
+sll $s6, $s6, 8
 j _handler_ret
 _cmd_restart:
 j _init

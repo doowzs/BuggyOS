@@ -8,6 +8,7 @@ module vga(
 	output						hsync,
 	output						vsync,
 	output						valid,
+	input          [31:0]   vga_rgba,
 	output	    	[7:0]		vga_r,
 	output	    	[7:0]		vga_g,
 	output	    	[7:0]		vga_b
@@ -132,7 +133,8 @@ module vga(
 
 	assign vga_addr = {by[5:0], 6'h0} + {by[9:0], 2'b00} + {1'b0, by[9:0], 1'b0} + {2'b00, bx};
 
-	assign vga_r = font_data[dx - 1] == 1 ? 8'hff : 8'h00;
-	assign vga_g = font_data[dx - 1] == 1 ? 8'hff : 8'h00;
-	assign vga_b = font_data[dx - 1] == 1 ? 8'hff : 8'h00;
+	wire font_valid = (font_data[dx - 1] == 1);
+	assign vga_r = font_valid ? vga_rgba[31:24] : 8'h00;
+	assign vga_g = font_valid ? vga_rgba[23:16] : 8'h00;
+	assign vga_b = font_valid ? vga_rgba[15:8] : 8'h00;
 endmodule 
